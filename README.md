@@ -1,2 +1,5 @@
-# chatsee
-Real time Chat app with file sharing. 
+# Chatsee - Underdevelopment
+
+Real time Chat app with file sharing.
+
+### MERN Stack
