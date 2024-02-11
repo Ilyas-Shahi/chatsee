@@ -1,0 +1,21 @@
+{
+  "name": "chatsee",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "author": "Ilyas Shahi",
+  "repository": "https://github.com/Ilyas-Shahi/chatsee.git",
+  "private": true,
+  "scripts": {
+    "start:server": "yarn workspace server start",
+    "start:client": "yarn workspace client dev",
+    "dev": "concurrently --kill-others-on-fail \"yarn start:server\" \"yarn start:client\""
+  },
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
