@@ -4,6 +4,7 @@ logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+<<<<<<< HEAD
 pnpm-debug.log*
 lerna-debug.log*
 
@@ -19,6 +20,8 @@ lerna-debug.log*
 *.njsproj
 *.sln
 *.sw?
+=======
+>>>>>>> dce117f803b33cbb5d92a4e4232046d8f6b50bc0
 lerna-debug.log*
 .pnpm-debug.log*
 
@@ -105,7 +108,10 @@ out
 # Nuxt.js build / generate output
 .nuxt
 dist
+<<<<<<< HEAD
 dist-ssr
+=======
+>>>>>>> dce117f803b33cbb5d92a4e4232046d8f6b50bc0
 
 # Gatsby files
 .cache/
