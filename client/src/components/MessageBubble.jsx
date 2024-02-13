@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 export default function MessageBubble({ data }) {
   return (
     <div
-      className={`flex gap-4 max-w-[50%] ${
+      className={`flex gap-4 max-w-[80%] ${
         data.type === 'send' && 'self-end flex-row-reverse'
       }`}
     >
@@ -17,7 +17,7 @@ export default function MessageBubble({ data }) {
         {data.message}
       </div>
       <div
-        className={`flex flex-col justify-center gap-1 w-full max-w-max text-xs font-light text-gray-500 ${
+        className={`flex flex-col justify-center gap-1 w-full max-w-max text-xs font-light text-gray-600 ${
           data.type === 'send' && 'items-end'
         }`}
       >

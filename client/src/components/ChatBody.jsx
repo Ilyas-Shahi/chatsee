@@ -25,15 +25,11 @@ export default function ChatBody({ messages, sendMessage }) {
       <div
         style={{ backgroundImage: 'url(/chat-bg.svg)' }}
         ref={messagesContainerRef}
-        className="relative p-4 w-full h-[88vh] flex-col flex gap-3 scrollbar-hidden overflow-y-scroll border rounded-md border-darkBg bg-cover bg-center"
+        className="p-4 w-full h-[88vh] flex-col flex gap-3 scrollbar-hidden overflow-y-scroll border rounded-md border-darkBg bg-cover bg-center"
       >
-        {messages.length ? (
-          messages.map((mes, i) => <MessageBubble key={i} data={mes} />)
-        ) : (
-          <p className="absolute top-1/2 text-center w-full text-gray-300">
-            Open chat to see messages here. Or Start a new chat.
-          </p>
-        )}
+        {messages.map((mes, i) => (
+          <MessageBubble key={i} data={mes} />
+        ))}
       </div>
 
       <div className="w-full h-[10vh] min-h-20 justify-self-end border rounded-md border-darkBg p-4">
