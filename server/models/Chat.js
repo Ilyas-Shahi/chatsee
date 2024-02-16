@@ -1,10 +1,21 @@
 const mongoose = require('mongoose');
 const { Schema } = require('mongoose');
 
-const ChatSchema = new Schema({
-  room: String,
-});
+const MessageSchema = new Schema(
+  {
+    sender: { type: String, required: true },
+    receiver: { type: String, required: true },
+    message: { type: String, required: true },
+  },
+  { timestamps: true }
+);
+export const Message = mongoose.model('Chat', MessageSchema);
 
-const Chat = mongoose.model('Chat', ChatSchema);
-
-export default Chat;
+const ChatSchema = new Schema(
+  {
+    room: { type: String, required: true },
+    messages: [Message],
+  },
+  { timestamps: true }
+);
+export const Chat = mongoose.model('Chat', ChatSchema);

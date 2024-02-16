@@ -6,6 +6,7 @@ const UserSchema = new Schema({
   lastName: { type: String, required: true, min: 2, max: 30 },
   userName: { type: String, required: true, min: 5, max: 30, unique: true },
   email: { type: String, required: true, min: 5, max: 30, unique: true },
+  friends: { type: Array, default: []},
 });
 
 const User = mongoose.model('User', UserSchema);

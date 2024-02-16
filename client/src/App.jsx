@@ -27,10 +27,10 @@ const dummyUsers = [
 
 function App() {
   const [user, setUser] = useState({
-    firstName: 'John',
-    lastName: 'Doe',
-    username: 'johndoe23',
-    email: 'john@example.com',
+    firstName: 'Mark',
+    lastName: 'Jackson',
+    username: 'mark98',
+    email: 'mark@example.com',
     friends: dummyUsers,
   });
   const [room, setRoom] = useState();
@@ -97,30 +97,32 @@ function App() {
               Chats
             </h2>
 
-            <div className="scrollbar-hidden overflow-scroll h-full">
-              {user.friends ? (
-                user.friends.map((user) => (
-                  <ChatHead
-                    key={user.username}
-                    data={user}
-                    startChat={startChat}
-                  />
-                ))
-              ) : (
-                <div className="flex flex-col gap-2 items-center">
-                  <p className="text-lg">No friends yet</p>
-                  <button className="flex justify-center items-center gap-1 bg-darkerBG px-6 py-2 rounded-md">
-                    <p className="text-sm text-gray-100">Add friend</p>
-
-                    <img
-                      src="../../public/add-user-icon.svg"
-                      alt="add use icon"
-                      className="w-6 ml-2"
+            {user && (
+              <div className="scrollbar-hidden overflow-scroll h-full">
+                {user.friends ? (
+                  user.friends.map((user) => (
+                    <ChatHead
+                      key={user.username}
+                      data={user}
+                      startChat={startChat}
                     />
-                  </button>
-                </div>
-              )}
-            </div>
+                  ))
+                ) : (
+                  <div className="flex flex-col gap-2 items-center">
+                    <p className="text-lg">No friends yet</p>
+                    <button className="flex justify-center items-center gap-1 bg-darkerBG px-6 py-2 rounded-md">
+                      <p className="text-sm text-gray-100">Add friend</p>
+
+                      <img
+                        src="../../public/add-user-icon.svg"
+                        alt="add use icon"
+                        className="w-6 ml-2"
+                      />
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
