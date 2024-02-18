@@ -1,5 +1,4 @@
-const mongoose = require('mongoose');
-const { Schema } = require('mongoose');
+import mongoose, { Schema } from 'mongoose';
 
 const MessageSchema = new Schema(
   {

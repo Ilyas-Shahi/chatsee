@@ -42,7 +42,7 @@ export default function User({ data }) {
 
           <button className="flex flex-col justify-center items-center ml-auto gap-1">
             <img
-              src="../../public/add-user-icon.svg"
+              src="/add-user-icon.svg"
               alt="add use icon"
               className="w-6 ml-2"
             />

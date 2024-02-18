@@ -114,7 +114,7 @@ function App() {
                       <p className="text-sm text-gray-100">Add friend</p>
 
                       <img
-                        src="../../public/add-user-icon.svg"
+                        src="/add-user-icon.svg"
                         alt="add use icon"
                         className="w-6 ml-2"
                       />
