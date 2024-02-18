@@ -1,14 +1,18 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
+import cookieParser from 'cookie-parser';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 
 import userRouter from './routes/user.js';
+import authRouter from './routes/auth.js';
 
 const app = express();
 dotenv.config();
 app.use(express.json());
+app.use(cookieParser());
+
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: { origin: 'http://localhost:5173' },
@@ -19,6 +23,7 @@ const io = new Server(httpServer, {
 // });
 
 app.use('/user', userRouter);
+app.use('/auth', authRouter);
 
 io.on('connection', (socket) => {
   console.log('socket connected', socket.id);

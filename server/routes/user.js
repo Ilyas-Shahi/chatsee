@@ -1,9 +1,15 @@
 import express from 'express';
-import { getUser, signupUser } from '../controllers/user.js';
+
+import { verifyToken } from '../middleware/auth.js';
+import { getUser, getFriends, addFriend } from '../controllers/user.js';
 
 const router = express.Router();
 
-router.post('/signup', signupUser);
-router.get('/:id', getUser);
+// Get user details
+router.get('/:id', verifyToken, getUser);
+// Query friends of the user id
+router.get('/:id/friends', verifyToken, getFriends);
+// Add a friend for user
+router.patch('/:id/friends/add', verifyToken, addFriend);
 
 export default router;
