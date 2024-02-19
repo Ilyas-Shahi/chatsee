@@ -37,7 +37,7 @@ export default function ChatHead({ data, startChat }) {
         </p>
 
         <div className="flex">
-          <p className="text-green-100">Online</p>
+          <p className="text-gray-400">@{data.userName}</p>
         </div>
       </div>
     </div>
@@ -48,8 +48,8 @@ ChatHead.propTypes = {
   data: PropTypes.shape({
     firstName: PropTypes.string,
     lastName: PropTypes.string,
-    username: PropTypes.string,
-    email: PropTypes.string,
+    userName: PropTypes.string,
+    _id: PropTypes.string,
   }),
   startChat: PropTypes.func,
 };

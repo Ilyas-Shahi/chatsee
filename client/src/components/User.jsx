@@ -1,8 +1,12 @@
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { socket } from '../socket';
+import { useAuthStore } from '../store/auth';
 
-export default function User({ data }) {
+export default function User() {
+  const user = useAuthStore((state) => state.user);
+  const showModal = useAuthStore((state) => state.showModal);
+  const setShowModal = useAuthStore((state) => state.setShowModal);
   const [online, setOnline] = useState(false);
 
   useEffect(() => {
@@ -13,7 +17,7 @@ export default function User({ data }) {
 
   return (
     <>
-      {data ? (
+      {user ? (
         <div className="flex gap-4">
           <div className="relative w-12 h-12">
             <div
@@ -24,19 +28,19 @@ export default function User({ data }) {
 
             <div className="flex items-center justify-center w-12 h-12 text-gray-400 rounded-full bg-darkerBG">
               <p>
-                {data.firstName[0]}
-                {data.lastName[0]}
+                {user.firstName[0]}
+                {user.lastName[0]}
               </p>
             </div>
           </div>
 
           <div className="flex flex-col">
             <p>
-              {data.firstName} {data.lastName}
+              {user.firstName} {user.lastName}
             </p>
 
             <div className="flex">
-              <p className="text-green-100">(you)</p>
+              <p className="text-gray-400">@{user.userName} (you)</p>
             </div>
           </div>
 
@@ -63,6 +67,6 @@ export default function User({ data }) {
   );
 }
 
-User.propTypes = {
-  data: PropTypes.object,
-};
+// User.propTypes = {
+//   data: PropTypes.object,
+// };

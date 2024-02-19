@@ -3,36 +3,18 @@ import ChatHead from './components/ChatHead';
 import { useEffect, useState } from 'react';
 import { socket } from './socket';
 import User from './components/User';
-
-const dummyUsers = [
-  {
-    firstName: 'John',
-    lastName: 'Doe',
-    username: 'johndoe23',
-    email: 'john@example.com',
-  },
-  {
-    firstName: 'Jane',
-    lastName: 'Doe',
-    username: 'jandeo495',
-    email: 'jane@example.com',
-  },
-  {
-    firstName: 'Mark',
-    lastName: 'Jackson',
-    username: 'mark98',
-    email: 'mark@example.com',
-  },
-];
+import { useAuthStore } from './store/auth';
+import AuthModal from './components/AuthModal';
+import Chats from './components/Chats';
 
 function App() {
-  const [user, setUser] = useState({
-    firstName: 'Mark',
-    lastName: 'Jackson',
-    username: 'mark98',
-    email: 'mark@example.com',
-    friends: dummyUsers,
-  });
+  const user = useAuthStore((state) => state.user);
+  const setUser = useAuthStore((state) => state.setUser);
+  const friendsData = useAuthStore((state) => state.friendsData);
+
+  const showModal = useAuthStore((state) => state.showModal);
+  const setShowModal = useAuthStore((state) => state.setShowModal);
+
   const [room, setRoom] = useState();
   const [messages, setMessages] = useState([]);
 
@@ -89,41 +71,10 @@ function App() {
       <div className="flex h-full">
         <div className="flex flex-col min-w-[300px]">
           <div className="px-5 py-5 m-2 rounded-md bg-darkBg">
-            <User data={user} />
+            <User />
           </div>
 
-          <div className="h-full px-5 py-10 m-2 rounded-md bg-darkBg overflow-hidden border-b-8 border-darkBg">
-            <h2 className="pb-4 mb-8 text-3xl font-semibold border-b border-darkMid">
-              Chats
-            </h2>
-
-            {user && (
-              <div className="scrollbar-hidden overflow-scroll h-full">
-                {user.friends ? (
-                  user.friends.map((user) => (
-                    <ChatHead
-                      key={user.username}
-                      data={user}
-                      startChat={startChat}
-                    />
-                  ))
-                ) : (
-                  <div className="flex flex-col gap-2 items-center">
-                    <p className="text-lg">No friends yet</p>
-                    <button className="flex justify-center items-center gap-1 bg-darkerBG px-6 py-2 rounded-md">
-                      <p className="text-sm text-gray-100">Add friend</p>
-
-                      <img
-                        src="/add-user-icon.svg"
-                        alt="add use icon"
-                        className="w-6 ml-2"
-                      />
-                    </button>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+          <Chats />
         </div>
 
         <div className="w-full m-2">
@@ -139,10 +90,18 @@ function App() {
                     Login or Sign up to start using the chat.
                   </p>
                   <div className="flex gap-4">
-                    <button className="bg-accentDark text-darkerBG font-semibold px-10 py-2 rounded-md hover:bg-accent transition-all">
+                    <button
+                      onClick={() => setShowModal({ for: 'login', show: true })}
+                      className="bg-accentDark text-darkerBG font-semibold px-10 py-2 rounded-md hover:bg-accent transition-all"
+                    >
                       Login
                     </button>
-                    <button className="bg-accentDark text-darkerBG font-semibold px-10 py-2 rounded-md hover:bg-accent transition-all">
+                    <button
+                      onClick={() =>
+                        setShowModal({ for: 'signup', show: true })
+                      }
+                      className="bg-accentDark text-darkerBG font-semibold px-10 py-2 rounded-md hover:bg-accent transition-all"
+                    >
                       Sign up
                     </button>
                   </div>
@@ -152,6 +111,8 @@ function App() {
           )}
         </div>
       </div>
+
+      {showModal.show && <AuthModal />}
     </div>
   );
 }
