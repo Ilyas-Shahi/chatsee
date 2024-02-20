@@ -6,9 +6,11 @@ import User from './components/User';
 import { useAuthStore } from './store/auth';
 import AuthModal from './components/AuthModal';
 import Chats from './components/Chats';
+import AddFriend from './components/AddFriend';
 
 function App() {
   const user = useAuthStore((state) => state.user);
+  const showAddFriend = useAuthStore((state) => state.showAddFriend);
   const setUser = useAuthStore((state) => state.setUser);
   const friendsData = useAuthStore((state) => state.friendsData);
 
@@ -70,9 +72,9 @@ function App() {
     <div className="w-full h-screen bg-darkerBG text-gray-50">
       <div className="flex h-full">
         <div className="flex flex-col min-w-[300px]">
-          <div className="px-5 py-5 m-2 rounded-md bg-darkBg">
-            <User />
-          </div>
+          <User />
+
+          {showAddFriend && <AddFriend />}
 
           <Chats />
         </div>

@@ -5,8 +5,8 @@ import { useAuthStore } from '../store/auth';
 
 export default function User() {
   const user = useAuthStore((state) => state.user);
-  const showModal = useAuthStore((state) => state.showModal);
   const setShowModal = useAuthStore((state) => state.setShowModal);
+  const setShowAddFriend = useAuthStore((state) => state.setShowAddFriend);
   const [online, setOnline] = useState(false);
 
   useEffect(() => {
@@ -16,7 +16,7 @@ export default function User() {
   }, []);
 
   return (
-    <>
+    <div className="px-5 py-5 m-2 rounded-md bg-darkBg">
       {user ? (
         <div className="flex gap-4">
           <div className="relative w-12 h-12">
@@ -44,7 +44,10 @@ export default function User() {
             </div>
           </div>
 
-          <button className="flex flex-col justify-center items-center ml-auto gap-1">
+          <button
+            onClick={() => setShowAddFriend(true)}
+            className="flex flex-col items-center justify-center gap-1 ml-auto"
+          >
             <img
               src="/add-user-icon.svg"
               alt="add use icon"
@@ -54,16 +57,22 @@ export default function User() {
           </button>
         </div>
       ) : (
-        <div className="flex gap-4 justify-between">
-          <button className="w-full bg-darkerBG font-semibold px-6 py-2 rounded-md hover:bg-accent transition-all">
+        <div className="flex justify-between gap-4">
+          <button
+            onClick={() => setShowModal({ for: 'login', show: true })}
+            className="w-full px-6 py-2 font-semibold transition-all rounded-md bg-darkerBG hover:bg-accent hover:text-darkerBG"
+          >
             Login
           </button>
-          <button className="w-full bg-darkerBG font-semibold px-6 py-2 rounded-md hover:bg-accent transition-all">
+          <button
+            onClick={() => setShowModal({ for: 'signup', show: true })}
+            className="w-full px-6 py-2 font-semibold transition-all rounded-md bg-darkerBG hover:bg-accent hover:text-darkerBG"
+          >
             Sign up
           </button>
         </div>
       )}
-    </>
+    </div>
   );
 }
 

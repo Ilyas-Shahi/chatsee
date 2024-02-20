@@ -9,4 +9,7 @@ export const useAuthStore = create((set) => ({
 
   showModal: { for: 'login', show: false },
   setShowModal: (showModal) => set({ showModal }),
+
+  showAddFriend: false,
+  setShowAddFriend: (showAddFriend) => set({ showAddFriend }),
 }));

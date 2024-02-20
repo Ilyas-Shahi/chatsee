@@ -6,6 +6,7 @@ export default function Chats() {
   const user = useAuthStore((state) => state.user);
   const friendsData = useAuthStore((state) => state.friendsData);
   const setFriendsData = useAuthStore((state) => state.setFriendsData);
+  const setShowAddFriend = useAuthStore((state) => state.setShowAddFriend);
 
   console.log('Chats', user, friendsData);
 
@@ -22,7 +23,7 @@ export default function Chats() {
 
       fetchFriendsData();
     }
-  }, [user]);
+  }, [user, setFriendsData]);
 
   return (
     <div className="h-full px-5 py-10 m-2 rounded-md bg-darkBg overflow-hidden border-b-8 border-darkBg">
@@ -44,7 +45,10 @@ export default function Chats() {
           ) : (
             <div className="flex flex-col gap-2 items-center">
               <p className="text-lg">No friends yet</p>
-              <button className="flex justify-center items-center gap-1 bg-darkerBG px-6 py-2 rounded-md">
+              <button
+                onClick={() => setShowAddFriend(true)}
+                className="flex justify-center items-center gap-1 bg-darkerBG px-6 py-2 rounded-md"
+              >
                 <p className="text-sm text-gray-100">Add friend</p>
 
                 <img

@@ -62,12 +62,14 @@ export const addFriend = async (req, res) => {
       return res.status(404).json({ message: 'This user does not exist' });
     }
 
-    let friendExists = false;
+    let alreadyFriends = false;
     user.friends.forEach((friendId) => {
-      friendExists = friendId.toString() === friend._id.toString();
+      if (friendId.toString() === friend._id.toString()) {
+        alreadyFriends = true;
+      }
     });
 
-    if (friendExists) {
+    if (alreadyFriends) {
       res.status(409).json({ message: 'Friend already added' });
     } else {
       user.friends = [...user.friends, friend._id];
@@ -75,7 +77,7 @@ export const addFriend = async (req, res) => {
 
       await user.save();
       await friend.save();
-      res.status(200).json(user);
+      res.status(200).json(friend);
     }
   } catch (err) {
     res.status(501).json(err);
