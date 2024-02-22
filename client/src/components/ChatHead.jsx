@@ -1,9 +1,25 @@
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { socket } from '../socket';
+import { useChatStore } from '../store/chat';
+import { useAuthStore } from '../store/auth';
 
-export default function ChatHead({ data, startChat }) {
+export default function ChatHead({ data }) {
   const [online, setOnline] = useState(false);
+
+  const user = useAuthStore((state) => state.user);
+  const room = useChatStore((state) => state.room);
+  const setRoom = useChatStore((state) => state.setRoom);
+
+  const startChat = () => {
+    const uidRoom = [user.userName, data.userName].sort().join('-');
+    console.log(uidRoom);
+
+    setRoom(uidRoom);
+    // setMessages([]);
+
+    socket.emit('start-chat', uidRoom);
+  };
 
   useEffect(() => {
     socket.on('connect', () => setOnline(true));
@@ -14,7 +30,7 @@ export default function ChatHead({ data, startChat }) {
   return (
     <div
       className="flex gap-4 border-b last-of-type:border-none border-darkerBG pb-3 mb-3 cursor-pointer"
-      onClick={() => startChat()}
+      onClick={startChat}
     >
       <div className="relative w-12 h-12">
         <div
@@ -37,7 +53,7 @@ export default function ChatHead({ data, startChat }) {
         </p>
 
         <div className="flex">
-          <p className="text-gray-400">@{data.userName}</p>
+          <p className="text-gray-400 text-sm">@{data.userName}</p>
         </div>
       </div>
     </div>
@@ -51,5 +67,5 @@ ChatHead.propTypes = {
     userName: PropTypes.string,
     _id: PropTypes.string,
   }),
-  startChat: PropTypes.func,
+  // startChat: PropTypes.func,
 };

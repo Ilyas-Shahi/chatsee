@@ -7,6 +7,7 @@ import { useAuthStore } from './store/auth';
 import AuthModal from './components/AuthModal';
 import Chats from './components/Chats';
 import AddFriend from './components/AddFriend';
+import { useChatStore } from './store/chat';
 
 function App() {
   const user = useAuthStore((state) => state.user);
@@ -17,18 +18,9 @@ function App() {
   const showModal = useAuthStore((state) => state.showModal);
   const setShowModal = useAuthStore((state) => state.setShowModal);
 
-  const [room, setRoom] = useState();
+  const room = useChatStore((state) => state.room);
+  const setRoom = useChatStore((state) => state.setRoom);
   const [messages, setMessages] = useState([]);
-
-  const startChat = (room) => {
-    const uidRoom = prompt('enter room');
-    console.log(uidRoom);
-
-    setRoom(uidRoom);
-    setMessages([]);
-
-    socket.emit('start-chat', uidRoom);
-  };
 
   const sendMessage = (message) => {
     const newMessage = {

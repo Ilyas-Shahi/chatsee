@@ -13,12 +13,14 @@ export default function Chats() {
   useEffect(() => {
     if (user) {
       const fetchFriendsData = async () => {
-        const res = await fetch(`/api/user/${user._id}/friends`);
-        const data = await res.json();
+        try {
+          const res = await fetch(`/api/user/${user._id}/friends`);
+          const data = await res.json();
 
-        setFriendsData(data);
-
-        console.log(data);
+          if (res.status === 200) setFriendsData(data);
+        } catch (err) {
+          console.error(err);
+        }
       };
 
       fetchFriendsData();
@@ -35,12 +37,7 @@ export default function Chats() {
         <div className="scrollbar-hidden overflow-scroll h-full">
           {friendsData.length > 0 ? (
             friendsData.map((friend) => (
-              <ChatHead
-                key={friend.userName}
-                data={friend}
-                // startChat={startChat}
-              />
-              // <p key={friend.userName}>{friend.userName}</p>
+              <ChatHead key={friend.userName} data={friend} />
             ))
           ) : (
             <div className="flex flex-col gap-2 items-center">

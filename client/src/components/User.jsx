@@ -40,7 +40,7 @@ export default function User() {
             </p>
 
             <div className="flex">
-              <p className="text-gray-400">@{user.userName} (you)</p>
+              <p className="text-gray-400 text-sm">@{user.userName}</p>
             </div>
           </div>
 
