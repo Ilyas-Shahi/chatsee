@@ -10,15 +10,22 @@ export default function ChatHead({ data }) {
   const user = useAuthStore((state) => state.user);
   const room = useChatStore((state) => state.room);
   const setRoom = useChatStore((state) => state.setRoom);
+  const setMessagesFromDB = useChatStore((state) => state.setMessagesFromDB);
 
-  const startChat = () => {
+  const startChat = async () => {
     const uidRoom = [user.userName, data.userName].sort().join('-');
-    console.log(uidRoom);
 
-    setRoom(uidRoom);
-    // setMessages([]);
+    setRoom({ room: uidRoom, sender: user.userName, receiver: data.userName });
 
-    socket.emit('start-chat', uidRoom);
+    // start a chat if not already in the chat room
+    if (room?.room !== uidRoom) {
+      socket.emit('start-chat', uidRoom, (response) => {
+        console.log('response', response);
+        setMessagesFromDB(
+          response?.prevChats ? response.prevChats.messages : []
+        );
+      });
+    }
   };
 
   useEffect(() => {
@@ -48,7 +55,11 @@ export default function ChatHead({ data }) {
       </div>
 
       <div className="flex flex-col">
-        <p>
+        <p
+          className={`${
+            room?.room.includes(data.userName) && 'text-accent/90 font-bold'
+          }`}
+        >
           {data.firstName} {data.lastName}
         </p>
 

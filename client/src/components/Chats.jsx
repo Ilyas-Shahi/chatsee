@@ -8,8 +8,6 @@ export default function Chats() {
   const setFriendsData = useAuthStore((state) => state.setFriendsData);
   const setShowAddFriend = useAuthStore((state) => state.setShowAddFriend);
 
-  console.log('Chats', user, friendsData);
-
   useEffect(() => {
     if (user) {
       const fetchFriendsData = async () => {

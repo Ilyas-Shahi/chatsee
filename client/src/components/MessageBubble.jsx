@@ -1,34 +1,39 @@
 import PropTypes from 'prop-types';
+import { useAuthStore } from '../store/auth';
 
 export default function MessageBubble({ data }) {
+  const user = useAuthStore((state) => state.user);
+
+  const sendType = user.userName === data.sender;
+
   return (
     <div
       className={`flex gap-4 max-w-[80%] ${
-        data.type === 'send' && 'self-end flex-row-reverse'
+        sendType && 'self-end flex-row-reverse'
       }`}
     >
       <div
         className={`px-4 py-2 rounded-xl w-max ${
-          data.type === 'send'
+          sendType
             ? 'bg-darkBg rounded-br-none'
-            : 'bg-accentDark text-darkerBG rounded-bl-none'
+            : 'bg-accentDark text-darkerBG rounded-bl-none font-semibold'
         }`}
       >
         {data.message}
       </div>
       <div
         className={`flex flex-col justify-center gap-1 w-full max-w-max text-xs font-light text-gray-600 ${
-          data.type === 'send' && 'items-end'
+          sendType && 'items-end'
         }`}
       >
         <p>
-          {data.time.toLocaleString('en-US', {
+          {new Date(data.sentAt).toLocaleString('en-US', {
             hour: 'numeric',
             minute: 'numeric',
           })}
         </p>
 
-        {data.type === 'send' && <p>{data.state}</p>}
+        {/* {sendType && <p>{data.state}</p>} */}
       </div>
     </div>
   );

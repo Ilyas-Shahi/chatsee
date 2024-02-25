@@ -1,19 +1,17 @@
 import mongoose, { Schema } from 'mongoose';
 
-const MessageSchema = new Schema(
-  {
-    sender: {
-      type: String,
-      // required: true
-    },
-    receiver: {
-      type: String,
-      //  required: true
-    },
-    message: { type: String || Number, required: true },
+const MessageSchema = new Schema({
+  sender: {
+    type: String,
+    // required: true
   },
-  { timestamps: true }
-);
+  receiver: {
+    type: String,
+    //  required: true
+  },
+  message: { type: String || Number, required: true },
+  sentAt: { type: Date, required: true },
+});
 export const Message = mongoose.model('Message', MessageSchema);
 
 const ChatSchema = new Schema(

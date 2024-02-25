@@ -1,8 +1,38 @@
 import { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import MessageBubble from './MessageBubble';
+import { useChatStore } from '../store/chat';
+import { socket } from '../socket';
 
-export default function ChatBody({ messages, sendMessage }) {
+export default function ChatBody() {
+  const room = useChatStore((state) => state.room);
+  const messages = useChatStore((state) => state.messages);
+  const setMessages = useChatStore((state) => state.setMessages);
+  // const [messages, setMessages] = useState([]);
+
+  const sendMessage = (message) => {
+    const newMessage = {
+      sender: room.sender,
+      receiver: room.receiver,
+      message: message,
+      sentAt: new Date(Date.now()),
+    };
+
+    setMessages(newMessage);
+    console.log('sent message', newMessage);
+
+    socket.emit('send', newMessage);
+  };
+
+  useEffect(() => {
+    socket.on('receive', (message) => {
+      console.log('received message', message);
+      setMessages(message);
+    });
+
+    return () => socket.off('receive');
+  }, []);
+
   const messagesContainerRef = useRef();
 
   const handleSubmit = (e) => {
@@ -15,6 +45,7 @@ export default function ChatBody({ messages, sendMessage }) {
   };
 
   useEffect(() => {
+    console.log('all messages', messages);
     messagesContainerRef.current.scrollTop =
       messagesContainerRef.current.scrollHeight -
       messagesContainerRef.current.clientHeight;
@@ -64,6 +95,6 @@ export default function ChatBody({ messages, sendMessage }) {
 }
 
 ChatBody.propTypes = {
-  messages: PropTypes.array,
-  sendMessage: PropTypes.func,
+  // messages: PropTypes.array,
+  // sendMessage: PropTypes.func,
 };

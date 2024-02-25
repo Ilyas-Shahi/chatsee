@@ -27,12 +27,13 @@ app.use('/auth', authRouter);
 // WebSocket initialization
 io.on('connection', (socket) => {
   console.log('socket connected', socket.id);
+  console.log(socket.rooms);
   let currentRoom;
   let currentChat;
 
   // console.log(socket.handshake);
 
-  socket.on('start-chat', async (room) => {
+  socket.on('start-chat', async (room, callback) => {
     console.log('started chat on room', room);
 
     if (currentRoom) socket.leave(currentRoom);
@@ -40,29 +41,32 @@ io.on('connection', (socket) => {
     currentRoom = room;
     socket.join(room);
 
-    const chatData = await Chat.findOne({ room });
-    if (chatData === null) {
-      currentChat = await Chat.create({ room });
-    } else {
-      currentChat = chatData;
-    }
-    // console.log(socket.rooms);
+    // send previous chat message as response to client
+    callback({
+      prevChats: await Chat.findOne({ room }),
+    });
   });
 
-  // if (chat) {
-
-  // }
-
-  socket.on('send', (data) => {
+  socket.on('send', async (data) => {
     console.log('message send', data, currentRoom);
-    socket.to(currentRoom).emit('receive', data);
-    // storeMessage(data, currentRoom);
+    if (!currentRoom) {
+      console.error('no room selected');
+      return;
+    }
 
-    currentChat.messages = [...currentChat.messages, { message: data }];
+    try {
+      // Find the room and add the message to DB, create if doesn't exist
+      await Chat.findOneAndUpdate(
+        { room: currentRoom },
+        { $push: { messages: data } },
+        { upsert: true }
+      );
 
-    currentChat.save();
-
-    console.log(currentChat);
+      // console.log(currentChat);
+      socket.to(currentRoom).emit('receive', data);
+    } catch (err) {
+      console.error(err);
+    }
   });
 });
 

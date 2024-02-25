@@ -20,35 +20,7 @@ function App() {
 
   const room = useChatStore((state) => state.room);
   const setRoom = useChatStore((state) => state.setRoom);
-  const [messages, setMessages] = useState([]);
-
-  const sendMessage = (message) => {
-    const newMessage = {
-      type: 'send',
-      message: message,
-      time: new Date(Date.now()),
-      state: 'sent',
-    };
-
-    setMessages((prev) => [...prev, newMessage]);
-
-    socket.emit('send', message);
-  };
-
-  useEffect(() => {
-    socket.on('receive', (message) => {
-      const newMessage = {
-        type: 'receive',
-        message: message,
-        time: new Date(Date.now()),
-      };
-
-      // console.log(newMessage);
-      setMessages((prev) => [...prev, newMessage]);
-    });
-
-    return () => socket.off('receive');
-  }, []);
+  const messages = useChatStore((state) => state.messages);
 
   // useEffect(() => {
   //   if (room) socket.connect();
@@ -73,7 +45,7 @@ function App() {
 
         <div className="w-full m-2">
           {room ? (
-            <ChatBody messages={messages} sendMessage={sendMessage} />
+            <ChatBody />
           ) : (
             <div className="flex items-center justify-center w-full h-full text-lg text-center text-gray-300 border rounded-md border-darkBg">
               {user ? (
