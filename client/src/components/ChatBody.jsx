@@ -8,6 +8,8 @@ export default function ChatBody() {
   const messages = useChatStore((state) => state.messages);
   const setMessages = useChatStore((state) => state.setMessages);
 
+  let date = new Date(Date.now()).toDateString();
+
   const sendMessage = (message) => {
     const newMessage = {
       sender: room.sender,
@@ -17,7 +19,6 @@ export default function ChatBody() {
     };
 
     setMessages(newMessage);
-    console.log('sent message', newMessage);
 
     socket.emit('send', newMessage);
   };
@@ -27,6 +28,8 @@ export default function ChatBody() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const messageText = e.target.message.value.trim();
+
+    console.log(e.target.file.value === '');
 
     if (messageText !== '') sendMessage(messageText);
 
@@ -42,7 +45,6 @@ export default function ChatBody() {
   }, []);
 
   useEffect(() => {
-    console.log('all messages', messages);
     messagesContainerRef.current.scrollTop =
       messagesContainerRef.current.scrollHeight -
       messagesContainerRef.current.clientHeight;
@@ -55,9 +57,34 @@ export default function ChatBody() {
         ref={messagesContainerRef}
         className="p-4 w-full h-[88vh] flex-col flex gap-3 scrollbar-hidden overflow-y-scroll border rounded-md border-darkBg bg-cover bg-center"
       >
-        {messages.map((mes, i) => (
-          <MessageBubble key={i} data={mes} />
-        ))}
+        {/* loop over all messages */}
+        {messages.map((mes, i) => {
+          const messageDate = new Date(mes.sentAt).toDateString();
+
+          // show the date if changes between messages and the message
+          // else show the message
+          if (messageDate !== date) {
+            date = messageDate;
+
+            return (
+              <>
+                <div className="flex items-center gap-2 my-2">
+                  <div className="w-full h-px bg-darkMid/30" />
+                  <p className="text-sm text-darkMid min-w-max">
+                    {date === new Date(Date.now()).toDateString()
+                      ? 'Today'
+                      : date}
+                  </p>
+                  <div className="w-full h-px bg-darkMid/30" />
+                </div>
+
+                <MessageBubble key={i} data={mes} />
+              </>
+            );
+          } else {
+            return <MessageBubble key={i} data={mes} />;
+          }
+        })}
       </div>
 
       <div className="w-full h-[10vh] min-h-20 justify-self-end border rounded-md border-darkBg p-4">
