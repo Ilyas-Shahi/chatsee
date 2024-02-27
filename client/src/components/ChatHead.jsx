@@ -1,13 +1,11 @@
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
 import { socket } from '../socket';
 import { useChatStore } from '../store/chat';
 import { useAuthStore } from '../store/auth';
 
 export default function ChatHead({ data }) {
-  const [online, setOnline] = useState(false);
-
   const user = useAuthStore((state) => state.user);
+  const onlineUsers = useChatStore((state) => state.onlineUsers);
   const room = useChatStore((state) => state.room);
   const setRoom = useChatStore((state) => state.setRoom);
   const setMessagesFromDB = useChatStore((state) => state.setMessagesFromDB);
@@ -28,12 +26,6 @@ export default function ChatHead({ data }) {
     }
   };
 
-  useEffect(() => {
-    socket.on('connect', () => setOnline(true));
-
-    return () => socket.on('disconnect', () => setOnline(false));
-  }, []);
-
   return (
     <div
       className="flex gap-4 border-b last-of-type:border-none border-darkerBG pb-3 mb-3 cursor-pointer"
@@ -42,7 +34,7 @@ export default function ChatHead({ data }) {
       <div className="relative w-12 h-12">
         <div
           className={`w-2 h-2 rounded-full absolute bottom-1 right-1 ${
-            online ? 'bg-green-600' : 'bg-gray-400'
+            onlineUsers.includes(data._id) ? 'bg-green-600' : 'bg-gray-400'
           }`}
         ></div>
 
@@ -78,5 +70,4 @@ ChatHead.propTypes = {
     userName: PropTypes.string,
     _id: PropTypes.string,
   }),
-  // startChat: PropTypes.func,
 };

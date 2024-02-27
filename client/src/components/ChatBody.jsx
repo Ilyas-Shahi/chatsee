@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react';
-import PropTypes from 'prop-types';
 import MessageBubble from './MessageBubble';
 import { useChatStore } from '../store/chat';
 import { socket } from '../socket';
@@ -8,7 +7,6 @@ export default function ChatBody() {
   const room = useChatStore((state) => state.room);
   const messages = useChatStore((state) => state.messages);
   const setMessages = useChatStore((state) => state.setMessages);
-  // const [messages, setMessages] = useState([]);
 
   const sendMessage = (message) => {
     const newMessage = {
@@ -24,15 +22,6 @@ export default function ChatBody() {
     socket.emit('send', newMessage);
   };
 
-  useEffect(() => {
-    socket.on('receive', (message) => {
-      console.log('received message', message);
-      setMessages(message);
-    });
-
-    return () => socket.off('receive');
-  }, []);
-
   const messagesContainerRef = useRef();
 
   const handleSubmit = (e) => {
@@ -43,6 +32,14 @@ export default function ChatBody() {
 
     e.target.message.value = '';
   };
+
+  useEffect(() => {
+    socket.on('receive', (message) => {
+      setMessages(message);
+    });
+
+    return () => socket.off('receive');
+  }, []);
 
   useEffect(() => {
     console.log('all messages', messages);
@@ -93,8 +90,3 @@ export default function ChatBody() {
     </div>
   );
 }
-
-ChatBody.propTypes = {
-  // messages: PropTypes.array,
-  // sendMessage: PropTypes.func,
-};

@@ -1,19 +1,12 @@
-import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
-import { socket } from '../socket';
 import { useAuthStore } from '../store/auth';
+import { useChatStore } from '../store/chat';
 
 export default function User() {
   const user = useAuthStore((state) => state.user);
   const setShowModal = useAuthStore((state) => state.setShowModal);
   const setShowAddFriend = useAuthStore((state) => state.setShowAddFriend);
-  const [online, setOnline] = useState(false);
 
-  useEffect(() => {
-    socket.on('connect', () => setOnline(true));
-
-    return () => socket.on('disconnect', () => setOnline(false));
-  }, []);
+  const onlineUsers = useChatStore((state) => state.onlineUsers);
 
   return (
     <div className="px-5 py-5 m-2 rounded-md bg-darkBg">
@@ -22,7 +15,7 @@ export default function User() {
           <div className="relative w-12 h-12">
             <div
               className={`w-4 h-4 border-4 border-darkBg rounded-full absolute bottom-0 right-0 ${
-                online ? 'bg-green-600' : 'bg-gray-400'
+                onlineUsers.includes(user._id) ? 'bg-green-600' : 'bg-gray-400'
               }`}
             />
 
@@ -75,7 +68,3 @@ export default function User() {
     </div>
   );
 }
-
-// User.propTypes = {
-//   data: PropTypes.object,
-// };

@@ -18,6 +18,7 @@ app.use(cookieParser());
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: { origin: process.env.CLIENT_ORIGIN || 'http://localhost:5173' },
+  cookie: true,
 });
 
 // API routes for auth and user
@@ -27,11 +28,8 @@ app.use('/auth', authRouter);
 // WebSocket initialization
 io.on('connection', (socket) => {
   console.log('socket connected', socket.id);
-  console.log(socket.rooms);
-  let currentRoom;
-  let currentChat;
 
-  // console.log(socket.handshake);
+  let currentRoom;
 
   socket.on('start-chat', async (room, callback) => {
     console.log('started chat on room', room);
@@ -68,7 +66,25 @@ io.on('connection', (socket) => {
       console.error(err);
     }
   });
+
+  // Emit all online users on a socket connection and disconnect
+  io.emit('get-online-users', getOnlineUsers());
+  socket.on('disconnect', () => {
+    io.emit('get-online-users', getOnlineUsers());
+  });
 });
+
+const getOnlineUsers = () => {
+  let onlineUsers = [];
+
+  io.sockets.sockets.forEach((socket) =>
+    onlineUsers.push(socket.handshake.auth.userId)
+  );
+
+  console.log(onlineUsers);
+
+  return onlineUsers;
+};
 
 // Server startup
 const port = process.env.PORT || 3000;

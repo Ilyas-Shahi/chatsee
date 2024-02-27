@@ -8,4 +8,7 @@ export const useChatStore = create((set) => ({
   setMessages: (message) =>
     set((state) => ({ messages: [...state.messages, message] })),
   setMessagesFromDB: (messages) => set({ messages }),
+
+  onlineUsers: [],
+  setOnlineUsers: (onlineUsers) => set({ onlineUsers }),
 }));

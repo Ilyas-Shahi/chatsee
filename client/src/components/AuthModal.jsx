@@ -27,9 +27,10 @@ export default function AuthModal() {
       });
       const data = await res.json();
 
-      console.log(data);
       setUser(data);
       setShowModal({ ...showModal, show: false });
+
+      socket.auth = { userId: data._id }; // pass user id to server on socket handshake
       socket.connect();
     } catch (err) {
       console.error(err);

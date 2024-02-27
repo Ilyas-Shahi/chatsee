@@ -21,6 +21,8 @@ function App() {
   const room = useChatStore((state) => state.room);
   const setRoom = useChatStore((state) => state.setRoom);
   const messages = useChatStore((state) => state.messages);
+  const onlineUsers = useChatStore((state) => state.onlineUsers);
+  const setOnlineUsers = useChatStore((state) => state.setOnlineUsers);
 
   // useEffect(() => {
   //   if (room) socket.connect();
@@ -31,6 +33,14 @@ function App() {
   // socket.on('connect', () => {
   //   console.log('connecting...');
   // });
+
+  useEffect(() => {
+    socket.on('get-online-users', (onlineUsers) => {
+      setOnlineUsers(onlineUsers);
+    });
+
+    return () => socket.off('get-online-users');
+  }, []);
 
   return (
     <div className="w-full h-screen bg-darkerBG text-gray-50">
