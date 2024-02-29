@@ -11,14 +11,14 @@ export default function ChatHead({ data }) {
   const setMessagesFromDB = useChatStore((state) => state.setMessagesFromDB);
 
   const startChat = async () => {
-    const uidRoom = [user.userName, data.userName].sort().join('-');
-
-    setRoom({ room: uidRoom, sender: user.userName, receiver: data.userName });
-
     // start a chat if not already in the chat room
-    if (room?.room !== uidRoom) {
-      socket.emit('start-chat', uidRoom, (response) => {
-        console.log('response', response);
+    if (room?.receiverId !== data._id) {
+      const roomData = { senderId: user._id, receiverId: data._id };
+
+      setRoom(roomData);
+
+      socket.emit('start-chat', roomData, (response) => {
+        // getting the prev chats for this room in response from server
         setMessagesFromDB(
           response?.prevChats ? response.prevChats.messages : []
         );
@@ -49,7 +49,7 @@ export default function ChatHead({ data }) {
       <div className="flex flex-col">
         <p
           className={`${
-            room?.room.includes(data.userName) && 'text-accent/90 font-bold'
+            room?.receiverId === data._id && 'text-accent/90 font-bold'
           }`}
         >
           {data.firstName} {data.lastName}

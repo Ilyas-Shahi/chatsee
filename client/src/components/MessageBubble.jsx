@@ -4,7 +4,7 @@ import { useAuthStore } from '../store/auth';
 export default function MessageBubble({ data }) {
   const user = useAuthStore((state) => state.user);
 
-  const sendType = user.userName === data.sender;
+  const sendType = user._id === data.sender;
 
   return (
     <div

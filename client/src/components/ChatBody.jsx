@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import MessageBubble from './MessageBubble';
 import { useChatStore } from '../store/chat';
 import { socket } from '../socket';
@@ -12,8 +12,8 @@ export default function ChatBody() {
 
   const sendMessage = (message) => {
     const newMessage = {
-      sender: room.sender,
-      receiver: room.receiver,
+      sender: room.senderId,
+      receiver: room.receiverId,
       message: message,
       sentAt: new Date(Date.now()),
     };
@@ -67,7 +67,7 @@ export default function ChatBody() {
             date = messageDate;
 
             return (
-              <>
+              <React.Fragment key={i}>
                 <div className="flex items-center gap-2 my-2">
                   <div className="w-full h-px bg-darkMid/30" />
                   <p className="text-sm text-darkMid min-w-max">
@@ -78,8 +78,8 @@ export default function ChatBody() {
                   <div className="w-full h-px bg-darkMid/30" />
                 </div>
 
-                <MessageBubble key={i} data={mes} />
-              </>
+                <MessageBubble data={mes} />
+              </React.Fragment>
             );
           } else {
             return <MessageBubble key={i} data={mes} />;
