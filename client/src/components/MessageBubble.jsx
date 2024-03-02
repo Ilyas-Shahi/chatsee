@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useAuthStore } from '../store/auth';
 
-export default function MessageBubble({ data }) {
+export default function MessageBubble({ data, scrollToBottom }) {
   const user = useAuthStore((state) => state.user);
 
   const sendType = user._id === data.sender;
@@ -13,14 +13,25 @@ export default function MessageBubble({ data }) {
       }`}
     >
       <div
-        className={`px-4 py-2 rounded-xl w-max ${
+        className={`px-4 py-2 rounded-xl w-max sm:max-w-sm md:max-w-md xl:max-w-xl ${
           sendType
             ? 'bg-darkBg rounded-br-none'
             : 'bg-accentDark text-darkerBG rounded-bl-none font-semibold'
         }`}
       >
-        {data.message}
+        {data.attachment && (
+          <img
+            src={data.attachment}
+            alt="attachment"
+            className="mx-auto my-2 rounded-md cursor-pointer w-60 max-h-96"
+            onLoad={() => scrollToBottom()}
+            onClick={() => window.open(data.attachment, '_blank')}
+          />
+        )}
+
+        <span>{data.message}</span>
       </div>
+
       <div
         className={`flex flex-col justify-center gap-1 w-full max-w-max text-xs font-light text-gray-600 ${
           sendType && 'items-end'
@@ -41,4 +52,5 @@ export default function MessageBubble({ data }) {
 
 MessageBubble.propTypes = {
   data: PropTypes.object,
+  scrollToBottom: PropTypes.func,
 };
