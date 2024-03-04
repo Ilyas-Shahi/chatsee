@@ -152,7 +152,9 @@ export default function ChatBody() {
             type="text"
             name="message"
             id="message"
-            placeholder="Type a message"
+            placeholder={
+              file ? `Attachment selected: ${file.name}` : 'Type a message'
+            }
             className="w-full h-12 p-4 break-words rounded-lg appearance-none bg-darkBg focus:outline-none"
           />
 
