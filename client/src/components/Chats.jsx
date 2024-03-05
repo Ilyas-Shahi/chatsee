@@ -1,29 +1,42 @@
 import { useEffect } from 'react';
 import { useAuthStore } from '../store/auth';
 import ChatHead from './ChatHead';
+import { socket } from '../socket';
+import { useChatStore } from '../store/chat';
 
 export default function Chats() {
   const user = useAuthStore((state) => state.user);
   const friendsData = useAuthStore((state) => state.friendsData);
   const setFriendsData = useAuthStore((state) => state.setFriendsData);
   const setShowAddFriend = useAuthStore((state) => state.setShowAddFriend);
+  const setErrorModal = useChatStore((state) => state.setErrorModal);
 
+  const fetchFriendsData = async () => {
+    if (user) {
+      try {
+        const res = await fetch(`/api/user/${user._id}/friends`);
+        const data = await res.json();
+
+        if (res.status === 200) setFriendsData(data);
+      } catch (err) {
+        console.error(err);
+        setErrorModal({ message: err.message, show: true });
+      }
+    }
+  };
+
+  // update friends if another add this user as a friend
+  socket.on('update-friends', () => {
+    console.log('update-friends fetch friends', user);
+    fetchFriendsData();
+  });
+
+  // fetch friends on user login
   useEffect(() => {
     if (user) {
-      const fetchFriendsData = async () => {
-        try {
-          const res = await fetch(`/api/user/${user._id}/friends`);
-          const data = await res.json();
-
-          if (res.status === 200) setFriendsData(data);
-        } catch (err) {
-          console.error(err);
-        }
-      };
-
       fetchFriendsData();
     }
-  }, [user, setFriendsData]);
+  }, [user]);
 
   return (
     <div className="h-full px-5 py-10 m-2 rounded-md bg-darkBg overflow-hidden border-b-8 border-darkBg">

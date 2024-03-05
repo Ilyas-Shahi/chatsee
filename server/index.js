@@ -82,6 +82,19 @@ io.on('connection', (socket) => {
         console.error(err);
       }
     });
+
+    // When a user add a friend, check if that friend is currently online and then emit an event to update its friend list
+    socket.on('add-friend', (data) => {
+      let friendSocket;
+      // Find the the added friends is online
+      io.sockets.sockets.forEach((s) => {
+        if (s.handshake.auth.userId === data) {
+          friendSocket = s;
+        }
+      });
+      // then emit event to that friend to update its friends asynchronously
+      friendSocket.emit('update-friends');
+    });
   } else {
     console.error('Not Authorized');
     socket.emit('auth-error', { message: 'Not Authorized' });

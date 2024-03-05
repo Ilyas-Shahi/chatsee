@@ -1,10 +1,13 @@
+import { socket } from '../socket';
 import { useAuthStore } from '../store/auth';
+import { useChatStore } from '../store/chat';
 
 export default function AddFriend() {
   const user = useAuthStore((state) => state.user);
   const friendsData = useAuthStore((state) => state.friendsData);
   const setFriendsData = useAuthStore((state) => state.setFriendsData);
   const setShowAddFriend = useAuthStore((state) => state.setShowAddFriend);
+  const setErrorModal = useChatStore((state) => state.setErrorModal);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,15 +22,18 @@ export default function AddFriend() {
       });
       const data = await res.json();
 
-      // console.log('res', res);
-      // console.log(data);
       if (res.status === 200) {
         const updateFriendsData = [data, ...friendsData];
         setFriendsData(updateFriendsData);
         setShowAddFriend(false);
+        socket.emit('add-friend', data._id);
+      } else {
+        console.error(data.message);
+        setErrorModal({ message: data.message, show: true });
       }
     } catch (err) {
       console.error(err);
+      setErrorModal({ message: err.message, show: true });
     }
   };
 

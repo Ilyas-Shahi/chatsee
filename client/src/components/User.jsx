@@ -3,7 +3,7 @@ import { useChatStore } from '../store/chat';
 
 export default function User() {
   const user = useAuthStore((state) => state.user);
-  const setShowModal = useAuthStore((state) => state.setShowModal);
+  const setAuthModal = useAuthStore((state) => state.setAuthModal);
   const setShowAddFriend = useAuthStore((state) => state.setShowAddFriend);
 
   const onlineUsers = useChatStore((state) => state.onlineUsers);
@@ -52,13 +52,13 @@ export default function User() {
       ) : (
         <div className="flex justify-between gap-4">
           <button
-            onClick={() => setShowModal({ for: 'login', show: true })}
+            onClick={() => setAuthModal({ for: 'login', show: true })}
             className="w-full px-6 py-2 font-semibold transition-all rounded-md bg-darkerBG hover:bg-accent hover:text-darkerBG"
           >
             Login
           </button>
           <button
-            onClick={() => setShowModal({ for: 'signup', show: true })}
+            onClick={() => setAuthModal({ for: 'signup', show: true })}
             className="w-full px-6 py-2 font-semibold transition-all rounded-md bg-darkerBG hover:bg-accent hover:text-darkerBG"
           >
             Sign up

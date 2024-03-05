@@ -10,6 +10,7 @@ export default function ChatBody() {
   const room = useChatStore((state) => state.room);
   const messages = useChatStore((state) => state.messages);
   const setMessages = useChatStore((state) => state.setMessages);
+  const setErrorModal = useChatStore((state) => state.setErrorModal);
 
   const messagesEndRef = useRef(null);
 
@@ -45,9 +46,12 @@ export default function ChatBody() {
 
         sendMessage(messageText === '' ? ' ' : messageText, fileURL);
       } catch (err) {
-        console.error('Error uploading', err);
+        setErrorModal({
+          message: `Error uploading: ${err.message}`,
+          show: true,
+        });
       }
-    } else if (messageText !== '') {
+    } else if (messageText && messageText !== '') {
       sendMessage(messageText);
     } else {
       console.error('Fields empty');

@@ -1,6 +1,5 @@
 import ChatBody from './components/ChatBody';
-import ChatHead from './components/ChatHead';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { socket } from './socket';
 import User from './components/User';
 import { useAuthStore } from './store/auth';
@@ -8,31 +7,18 @@ import AuthModal from './components/AuthModal';
 import Chats from './components/Chats';
 import AddFriend from './components/AddFriend';
 import { useChatStore } from './store/chat';
+import ErrorModal from './components/ErrorModal';
 
 function App() {
   const user = useAuthStore((state) => state.user);
   const showAddFriend = useAuthStore((state) => state.showAddFriend);
-  const setUser = useAuthStore((state) => state.setUser);
-  const friendsData = useAuthStore((state) => state.friendsData);
 
-  const showModal = useAuthStore((state) => state.showModal);
-  const setShowModal = useAuthStore((state) => state.setShowModal);
+  const authModal = useAuthStore((state) => state.authModal);
+  const setAuthModal = useAuthStore((state) => state.setAuthModal);
 
   const room = useChatStore((state) => state.room);
-  const setRoom = useChatStore((state) => state.setRoom);
-  const messages = useChatStore((state) => state.messages);
-  const onlineUsers = useChatStore((state) => state.onlineUsers);
   const setOnlineUsers = useChatStore((state) => state.setOnlineUsers);
-
-  // useEffect(() => {
-  //   if (room) socket.connect();
-
-  //   return () => socket.disconnect();
-  // }, [room]);
-
-  // socket.on('connect', () => {
-  //   console.log('connecting...');
-  // });
+  const errorModal = useChatStore((state) => state.errorModal);
 
   useEffect(() => {
     socket.on('get-online-users', (onlineUsers) => {
@@ -67,14 +53,14 @@ function App() {
                   </p>
                   <div className="flex gap-4">
                     <button
-                      onClick={() => setShowModal({ for: 'login', show: true })}
+                      onClick={() => setAuthModal({ for: 'login', show: true })}
                       className="bg-accentDark text-darkerBG font-semibold px-10 py-2 rounded-md hover:bg-accent transition-all"
                     >
                       Login
                     </button>
                     <button
                       onClick={() =>
-                        setShowModal({ for: 'signup', show: true })
+                        setAuthModal({ for: 'signup', show: true })
                       }
                       className="bg-accentDark text-darkerBG font-semibold px-10 py-2 rounded-md hover:bg-accent transition-all"
                     >
@@ -88,7 +74,9 @@ function App() {
         </div>
       </div>
 
-      {showModal.show && <AuthModal />}
+      {authModal.show && <AuthModal />}
+
+      {errorModal.show && <ErrorModal />}
     </div>
   );
 }

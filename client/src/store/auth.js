@@ -7,8 +7,8 @@ export const useAuthStore = create((set) => ({
   friendsData: [],
   setFriendsData: (friendsData) => set({ friendsData }),
 
-  showModal: { for: 'login', show: false },
-  setShowModal: (showModal) => set({ showModal }),
+  authModal: { for: 'login', show: false },
+  setAuthModal: (authModal) => set({ authModal }),
 
   showAddFriend: false,
   setShowAddFriend: (showAddFriend) => set({ showAddFriend }),

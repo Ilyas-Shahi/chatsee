@@ -1,17 +1,19 @@
 import { socket } from '../socket';
 import { useAuthStore } from '../store/auth';
+import { useChatStore } from '../store/chat';
 
 export default function AuthModal() {
   const setUser = useAuthStore((state) => state.setUser);
-  const showModal = useAuthStore((state) => state.showModal);
-  const setShowModal = useAuthStore((state) => state.setShowModal);
+  const authModal = useAuthStore((state) => state.authModal);
+  const setAuthModal = useAuthStore((state) => state.setAuthModal);
+  const setErrorModal = useChatStore((state) => state.setErrorModal);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const { firstName, lastName, userName, email, password } = e.target;
 
-    if (showModal.for === 'login') {
+    if (authModal.for === 'login') {
       login(email, password);
     } else {
       signup(firstName, lastName, userName, email, password);
@@ -27,18 +29,23 @@ export default function AuthModal() {
       });
       const data = await res.json();
 
-      setUser(data);
-      setShowModal({ ...showModal, show: false });
+      if (res.status === 200) {
+        setUser(data);
+        setAuthModal({ ...authModal, show: false });
 
-      socket.auth = { userId: data._id }; // pass user id to server on socket handshake
-      socket.connect();
+        socket.auth = { userId: data._id }; // pass user id to server on socket handshake
+        socket.connect();
+      } else {
+        console.error(data.message);
+        setErrorModal({ message: data.message, show: true });
+      }
     } catch (err) {
       console.error(err);
+      setErrorModal({ message: err.message, show: true });
     }
   };
 
   const signup = async (firstName, lastName, userName, email, password) => {
-    console.log('signup');
     try {
       const res = await fetch('/api/auth/signup', {
         method: 'POST',
@@ -51,27 +58,43 @@ export default function AuthModal() {
           password: password.value,
         }),
       });
+
       const data = await res.json();
-      setUser(data);
-      setShowModal({ ...showModal, show: false });
-      console.log(data);
+
+      if (res.status === 201) {
+        setUser(data);
+        setAuthModal({ ...authModal, show: false });
+      } else {
+        setErrorModal({
+          message:
+            'Check all the fields and ensure your have entered valid data.',
+          show: true,
+        });
+      }
     } catch (err) {
       console.error(err);
+      setErrorModal({ message: err.message, show: true });
     }
   };
 
   return (
-    <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full backdrop-blur-md bg-black/60 bg">
+    <div
+      id="parent"
+      onClick={(e) =>
+        e.target.id === 'parent' && setAuthModal({ ...authModal, show: false })
+      }
+      className="cursor-pointer absolute top-0 left-0 flex items-center justify-center w-full h-full backdrop-blur-md bg-black/60 bg"
+    >
       <div className="p-10 rounded-md bg-darkBg w-[480px]">
         <img
           src="/close-icon.svg"
           alt="close modal icon"
           className="w-5 mb-4 ml-auto cursor-pointer"
-          onClick={() => setShowModal({ ...showModal, show: false })}
+          onClick={() => setAuthModal({ ...authModal, show: false })}
         />
 
         <form onSubmit={handleSubmit} className="space-y-3">
-          {showModal.for === 'signup' && (
+          {authModal.for === 'signup' && (
             <>
               {' '}
               <div className="flex gap-2">
@@ -140,27 +163,27 @@ export default function AuthModal() {
               type="submit"
               className="w-1/2 px-10 py-2 my-2 capitalize rounded-md bg-accentDark text-darkerBG"
             >
-              {showModal.for}
+              {authModal.for}
             </button>
 
-            {showModal.for === 'login' && (
+            {authModal.for === 'login' && (
               <p className="text-sm text-gray-300">
                 Not have an account yet?{' '}
                 <span
                   className="underline cursor-pointer text-accentDark"
-                  onClick={() => setShowModal({ ...showModal, for: 'signup' })}
+                  onClick={() => setAuthModal({ ...authModal, for: 'signup' })}
                 >
                   Sign-up here
                 </span>
               </p>
             )}
 
-            {showModal.for === 'signup' && (
+            {authModal.for === 'signup' && (
               <p className="text-sm text-gray-300">
                 Already have an account?{' '}
                 <span
                   className="underline cursor-pointer text-accentDark"
-                  onClick={() => setShowModal({ ...showModal, for: 'login' })}
+                  onClick={() => setAuthModal({ ...authModal, for: 'login' })}
                 >
                   Login here
                 </span>
