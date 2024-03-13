@@ -18,6 +18,10 @@ const ChatSchema = new Schema(
   {
     room: { type: String, required: true },
     messages: [MessageSchema],
+    activity: {
+      lastMessage: { type: MessageSchema },
+      status: { type: String, default: 'sent' },
+    },
   },
   { timestamps: true }
 );

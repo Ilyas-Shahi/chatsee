@@ -5,8 +5,7 @@ import cookieParser from 'cookie-parser';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 
-import userRouter from './routes/user.js';
-import authRouter from './routes/auth.js';
+import { authRouter, userRouter } from './routes/index.js';
 import { Chat } from './models/Chat.js';
 import { verifySocketToken } from './middleware/auth.js';
 
@@ -41,30 +40,36 @@ io.on('connection', (socket) => {
 
     // Start a chat room
     socket.on('start-chat', async (data, callback) => {
-      const roomID = [data.senderId, data.receiverId].sort().join('-');
-
       // if sender is authorized then join the room
       if (verifiedUser.id === data.senderId) {
         if (currentRoom) socket.leave(currentRoom); // leave current room on joining a new one
 
-        currentRoom = roomID;
-        socket.join(roomID);
+        currentRoom = data.roomId;
+        socket.join(data.roomId);
 
         // send previous chat message as response to client
+        const roomDb = await Chat.findOne({ room: currentRoom });
         callback({
-          prevChats: await Chat.findOne({ room: roomID }),
+          prevChats: roomDb?.messages,
         });
       } else {
-        socket.emit('auth-error', { message: 'Not authorized to join room' });
+        socket.emit('error', {
+          type: 'auth-error',
+          message: 'Not authorized to join room',
+        });
         console.error('Not authorized to join room');
       }
     });
 
     // Listen for new messages, store in db and forward to receiver
-    socket.on('send', async (data) => {
+    socket.on('send', async (data, callback) => {
       console.log('message send', data, currentRoom);
       if (!currentRoom) {
         console.error('No room selected');
+        socket.emit('error', {
+          type: 'room-error',
+          message: 'No room selected',
+        });
         return;
       }
 
@@ -72,14 +77,40 @@ io.on('connection', (socket) => {
         // Find the room and add the message to DB, create if doesn't exist
         await Chat.findOneAndUpdate(
           { room: currentRoom },
-          { $push: { messages: data } },
+          {
+            $push: { messages: data },
+            $set: { activity: { lastMessage: data, status: 'sent' } },
+          },
           { upsert: true }
         );
 
-        // console.log(currentChat);
+        // Send the message to recipient joined the room
         socket.to(currentRoom).emit('receive', data);
+        // Emit an event for the room activity to show/update notifications
+        io.emit(`${currentRoom}-activity`);
+        // send callback to acknowledge message got to server
+        callback({ sent: true });
       } catch (err) {
         console.error(err);
+        socket.emit('error', {
+          type: 'send-error',
+          message: 'Error sending message.',
+        });
+      }
+    });
+
+    // Custom event to return room activity or update on seen messages
+    socket.on('room-activity-request', async (roomId, reqType, callback) => {
+      const room = await Chat.findOne({ room: roomId });
+
+      if (reqType === 'fetch') {
+        callback({ roomActivity: room?.activity });
+      }
+
+      if (reqType === 'mark-seen' && room) {
+        room.activity.status = 'seen';
+        room.save();
+        socket.to(roomId).emit('room-activity-updated', room?.activity);
       }
     });
 
@@ -96,8 +127,8 @@ io.on('connection', (socket) => {
       friendSocket.emit('update-friends');
     });
   } else {
-    console.error('Not Authorized');
-    socket.emit('auth-error', { message: 'Not Authorized' });
+    console.error('Not Authorized, Login with valid credentials');
+    socket.emit('error', { type: 'auth-error', message: 'Not Authorized' });
   }
 
   // Emit all online users on a socket connection and disconnect

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useAuthStore } from '../store/auth';
 
-export default function MessageBubble({ data, scrollToBottom }) {
+export default function MessageBubble({ data, status, scrollToBottom }) {
   const user = useAuthStore((state) => state.user);
 
   const sendType = user._id === data.sender;
@@ -44,7 +44,7 @@ export default function MessageBubble({ data, scrollToBottom }) {
           })}
         </p>
 
-        {/* {sendType && <p>{data.state}</p>} */}
+        {sendType && status && <p>{status}</p>}
       </div>
     </div>
   );
@@ -52,5 +52,6 @@ export default function MessageBubble({ data, scrollToBottom }) {
 
 MessageBubble.propTypes = {
   data: PropTypes.object,
+  status: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   scrollToBottom: PropTypes.func,
 };

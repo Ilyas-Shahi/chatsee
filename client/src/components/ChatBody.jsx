@@ -4,9 +4,12 @@ import { useChatStore } from '../store/chat';
 import { socket } from '../socket';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { storage } from '../../firebase.config';
+import { useAuthStore } from '../store/auth';
 
 export default function ChatBody() {
   const [file, setFile] = useState();
+  const [activityStatus, setActivityStatus] = useState();
+  const user = useAuthStore((state) => state.user);
   const room = useChatStore((state) => state.room);
   const messages = useChatStore((state) => state.messages);
   const setMessages = useChatStore((state) => state.setMessages);
@@ -25,9 +28,13 @@ export default function ChatBody() {
       sentAt: new Date(Date.now()),
     };
 
-    setMessages(newMessage);
-
-    socket.emit('send', newMessage);
+    // emit the new message to socket and on success sent add it to the messages
+    socket.emit('send', newMessage, (response) => {
+      if (response.sent) {
+        setMessages(newMessage);
+        setActivityStatus('sent');
+      }
+    });
   };
 
   // Handle form submission
@@ -38,8 +45,7 @@ export default function ChatBody() {
     // If there is a file attachment, upload to firebase storage and send the url in message
     if (file) {
       try {
-        const roomID = [room.senderId, room.receiverId].sort().join('-');
-        const storageRef = ref(storage, `${roomID}/${file.name}`);
+        const storageRef = ref(storage, `${room.roomId}/${file.name}`); // firebase storage reference
         // Upload file and get back the URL
         const uploadFile = await uploadBytes(storageRef, file);
         const fileURL = await getDownloadURL(uploadFile.ref);
@@ -71,18 +77,46 @@ export default function ChatBody() {
     scrollToBottom();
   }, [messages]);
 
-  // Remove the selected file on room change to avoid sending to wrong room
   useEffect(() => {
+    // Remove the selected file on room change to avoid sending to wrong room
     setFile(null);
+
+    // Fetch the last message and activity status for the current room on chat open
+    socket.emit('room-activity-request', room.roomId, 'fetch', (response) => {
+      if (response?.roomActivity) {
+        setActivityStatus(response.roomActivity?.status);
+
+        // if the last unread message is for the current user, set it as seen on chat open
+        if (
+          response.roomActivity?.lastMessage.receiver === user._id &&
+          response.roomActivity?.status === 'sent'
+        ) {
+          socket.emit('room-activity-request', room.roomId, 'mark-seen');
+        }
+      }
+    });
   }, [room]);
 
-  // Add a listener for any received messages and update the messages
   useEffect(() => {
+    // Add a listener for any received messages and update the messages
     socket.on('receive', (message) => {
       setMessages(message);
+
+      // emit a mark-seen event to the room to notify the sender of message being received
+      socket.emit('room-activity-request', room.roomId, 'mark-seen');
     });
 
-    return () => socket.off('receive');
+    // check for an activity in room to check if the message sent has been seen
+    socket.on('room-activity-updated', (response) => {
+      if (response) {
+        setActivityStatus(response.status);
+      }
+    });
+
+    return () => {
+      socket.off('receive');
+      socket.off('room-activity-updated');
+    };
   }, []);
 
   return (
@@ -112,7 +146,11 @@ export default function ChatBody() {
                   <div className="w-full h-px bg-darkMid/30" />
                 </div>
 
-                <MessageBubble data={mes} scrollToBottom={scrollToBottom} />
+                <MessageBubble
+                  data={mes}
+                  scrollToBottom={scrollToBottom}
+                  status={messages.length === i + 1 && activityStatus}
+                />
               </React.Fragment>
             );
           } else {
@@ -121,6 +159,7 @@ export default function ChatBody() {
                 key={i}
                 data={mes}
                 scrollToBottom={scrollToBottom}
+                status={messages.length === i + 1 && activityStatus}
               />
             );
           }

@@ -12,6 +12,6 @@ export const useChatStore = create((set) => ({
   onlineUsers: [],
   setOnlineUsers: (onlineUsers) => set({ onlineUsers }),
 
-  errorModal: { message: '', show: false },
+  errorModal: { type: '', message: '', show: false },
   setErrorModal: (errorModal) => set({ errorModal }),
 }));

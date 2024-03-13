@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { socket } from '../socket';
 import { useChatStore } from '../store/chat';
@@ -9,22 +10,50 @@ export default function ChatHead({ data }) {
   const room = useChatStore((state) => state.room);
   const setRoom = useChatStore((state) => state.setRoom);
   const setMessagesFromDB = useChatStore((state) => state.setMessagesFromDB);
+  const [notification, setNotification] = useState(false);
+
+  const roomId = [user._id, data._id].sort().join('-');
 
   const startChat = async () => {
+    setNotification(false); // remove notification in any
     // start a chat if not already in the chat room
     if (room?.receiverId !== data._id) {
-      const roomData = { senderId: user._id, receiverId: data._id };
+      const roomData = { roomId, senderId: user._id, receiverId: data._id };
 
       setRoom(roomData);
 
       socket.emit('start-chat', roomData, (response) => {
         // getting the prev chats for this room in response from server
-        setMessagesFromDB(
-          response?.prevChats ? response.prevChats.messages : []
-        );
+        setMessagesFromDB(response?.prevChats ? response.prevChats : []);
       });
     }
   };
+
+  // If not already in the room, check for any activity on user/chat and show notification
+  useEffect(() => {
+    socket.on(`${roomId}-activity`, () => {
+      if (room?.roomId !== roomId) {
+        setNotification(true);
+      }
+    });
+
+    return () => socket.off(`${roomId}-activity`);
+  }, [room, roomId]);
+
+  useEffect(() => {
+    socket.emit('room-activity-request', roomId, 'fetch', (response) => {
+      console.log('room activity response', response);
+      const activity = response?.roomActivity;
+
+      if (
+        activity &&
+        activity.lastMessage.receiver === user._id &&
+        activity.status === 'sent'
+      ) {
+        setNotification(true);
+      }
+    });
+  }, [roomId, user]);
 
   return (
     <div
@@ -36,7 +65,11 @@ export default function ChatHead({ data }) {
           className={`w-2 h-2 rounded-full absolute bottom-1 right-1 ${
             onlineUsers.includes(data._id) ? 'bg-green-600' : 'bg-gray-400'
           }`}
-        ></div>
+        />
+
+        {notification && (
+          <div className="w-2 h-2 rounded-full absolute top-1 left-1 bg-accent flex justify-center items-center" />
+        )}
 
         <div className="flex items-center justify-center w-12 h-12 text-gray-400 rounded-full bg-darkerBG">
           <p>

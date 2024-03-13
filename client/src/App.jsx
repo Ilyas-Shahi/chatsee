@@ -19,13 +19,19 @@ function App() {
   const room = useChatStore((state) => state.room);
   const setOnlineUsers = useChatStore((state) => state.setOnlineUsers);
   const errorModal = useChatStore((state) => state.errorModal);
+  const setErrorModal = useChatStore((state) => state.setErrorModal);
 
   useEffect(() => {
     socket.on('get-online-users', (onlineUsers) => {
       setOnlineUsers(onlineUsers);
     });
 
-    return () => socket.off('get-online-users');
+    socket.on('error', (error) => setErrorModal({ ...error, show: true }));
+
+    return () => {
+      socket.off('get-online-users');
+      socket.off('error');
+    };
   }, []);
 
   return (
