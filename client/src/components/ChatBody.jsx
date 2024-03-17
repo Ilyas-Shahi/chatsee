@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import MessageBubble from './MessageBubble';
-import { useChatStore } from '../store/chat';
-import { socket } from '../socket';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { socket } from '../socket';
 import { storage } from '../../firebase.config';
+import { useChatStore } from '../store/chat';
 import { useAuthStore } from '../store/auth';
+import MessageBubble from './MessageBubble';
+import RoomInfo from './RoomInfo';
 
 export default function ChatBody() {
   const [file, setFile] = useState();
@@ -121,9 +122,11 @@ export default function ChatBody() {
 
   return (
     <div className="flex flex-col justify-between w-auto h-full gap-2 overflow-hidden">
+      <RoomInfo />
+
       <div
         style={{ backgroundImage: 'url(/chat-bg.svg)' }}
-        className="p-4 w-full h-[88vh] flex-col flex gap-3 scrollbar-hidden overflow-y-scroll border rounded-md border-darkBg bg-cover bg-center"
+        className="p-4 w-full h-[88vh] flex-col flex gap-2 md:gap-3 scrollbar-hidden overflow-y-scroll border rounded-md border-darkBg bg-cover bg-center"
       >
         {/* loop over all messages */}
         {messages.map((mes, i) => {

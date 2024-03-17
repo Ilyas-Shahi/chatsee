@@ -11,7 +11,7 @@ export default function ErrorModal() {
         e.target.id === 'parent' &&
         setErrorModal({ ...errorModal, show: false })
       }
-      className="absolute top-0 left-0 flex items-center justify-center w-full h-full cursor-pointer backdrop-blur-md bg-black/60 bg"
+      className="absolute p-2 top-0 left-0 flex items-center justify-center w-full h-full cursor-pointer backdrop-blur-md bg-black/60 bg"
     >
       <div className="p-10 rounded-md bg-darkBg w-[480px]">
         <img

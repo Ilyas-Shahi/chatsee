@@ -47,9 +47,9 @@ export default function AddFriend() {
       />
 
       <form onSubmit={handleSubmit} className="space-y-3 flex gap-2 items-end">
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 w-full">
           <label htmlFor="friendUsername" className="ml-1 text-gray-200">
-            Friends User name
+            Friend username
           </label>
           <input
             type="text"

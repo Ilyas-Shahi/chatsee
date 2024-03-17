@@ -36,8 +36,8 @@ function App() {
 
   return (
     <div className="w-full h-screen bg-darkerBG text-gray-50">
-      <div className="flex h-full">
-        <div className="flex flex-col min-w-[300px]">
+      <div className="h-full md:flex">
+        <div className="flex flex-col min-w-[300px] h-max">
           <User />
 
           {showAddFriend && <AddFriend />}
@@ -45,7 +45,11 @@ function App() {
           <Chats />
         </div>
 
-        <div className="w-full m-2">
+        <div
+          className={`w-full h-screen p-2 md:m-2 md:p-0 md:h-auto md:block ${
+            room ? 'block' : 'hidden'
+          }`}
+        >
           {room ? (
             <ChatBody />
           ) : (
@@ -53,14 +57,14 @@ function App() {
               {user ? (
                 <p>Open chat to see messages here. Or Start a new chat.</p>
               ) : (
-                <div className="flex flex-col gap-8  items-center">
+                <div className="flex flex-col items-center gap-8">
                   <p className="text-2xl">
                     Login or Sign up to start using the chat.
                   </p>
                   <div className="flex gap-4">
                     <button
                       onClick={() => setAuthModal({ for: 'login', show: true })}
-                      className="bg-accentDark text-darkerBG font-semibold px-10 py-2 rounded-md hover:bg-accent transition-all"
+                      className="px-10 py-2 font-semibold transition-all rounded-md bg-accentDark text-darkerBG hover:bg-accent"
                     >
                       Login
                     </button>
@@ -68,7 +72,7 @@ function App() {
                       onClick={() =>
                         setAuthModal({ for: 'signup', show: true })
                       }
-                      className="bg-accentDark text-darkerBG font-semibold px-10 py-2 rounded-md hover:bg-accent transition-all"
+                      className="px-10 py-2 font-semibold transition-all rounded-md bg-accentDark text-darkerBG hover:bg-accent"
                     >
                       Sign up
                     </button>

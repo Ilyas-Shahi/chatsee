@@ -6,6 +6,7 @@ import { useChatStore } from '../store/chat';
 
 export default function Chats() {
   const user = useAuthStore((state) => state.user);
+  const room = useChatStore((state) => state.room);
   const friendsData = useAuthStore((state) => state.friendsData);
   const setFriendsData = useAuthStore((state) => state.setFriendsData);
   const setShowAddFriend = useAuthStore((state) => state.setShowAddFriend);
@@ -39,12 +40,16 @@ export default function Chats() {
   }, [user]);
 
   return (
-    <div className="h-full px-5 py-10 m-2 rounded-md bg-darkBg overflow-hidden border-b-8 border-darkBg">
+    <div
+      className={`h-full px-5 py-10 m-2 rounded-md bg-darkBg overflow-hidden border-b-8 border-darkBg md:block ${
+        room ? 'hidden' : 'block'
+      }`}
+    >
       <h2 className="pb-4 mb-8 text-3xl font-semibold border-b border-darkMid">
         Chats
       </h2>
 
-      {user && (
+      {user ? (
         <div className="scrollbar-hidden overflow-scroll h-full">
           {friendsData.length > 0 ? (
             friendsData.map((friend) => (
@@ -68,6 +73,8 @@ export default function Chats() {
             </div>
           )}
         </div>
+      ) : (
+        <p>Login to access chats.</p>
       )}
     </div>
   );

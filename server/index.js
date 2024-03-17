@@ -35,7 +35,7 @@ io.on('connection', (socket) => {
 
   const verifiedUser = verifySocketToken(socket);
 
-  if (verifiedUser.id === socket.handshake.auth.userId) {
+  if (verifiedUser?.id === socket.handshake.auth.userId) {
     let currentRoom;
 
     // Start a chat room
@@ -124,11 +124,14 @@ io.on('connection', (socket) => {
         }
       });
       // then emit event to that friend to update its friends asynchronously
-      friendSocket.emit('update-friends');
+      friendSocket?.emit('update-friends');
     });
   } else {
     console.error('Not Authorized, Login with valid credentials');
-    socket.emit('error', { type: 'auth-error', message: 'Not Authorized' });
+    socket.emit('error', {
+      type: 'auth-error',
+      message: 'Not Authorized, Login with valid credentials',
+    });
   }
 
   // Emit all online users on a socket connection and disconnect

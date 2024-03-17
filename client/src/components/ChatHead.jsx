@@ -42,7 +42,6 @@ export default function ChatHead({ data }) {
 
   useEffect(() => {
     socket.emit('room-activity-request', roomId, 'fetch', (response) => {
-      console.log('room activity response', response);
       const activity = response?.roomActivity;
 
       if (

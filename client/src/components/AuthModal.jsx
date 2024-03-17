@@ -83,7 +83,7 @@ export default function AuthModal() {
       onClick={(e) =>
         e.target.id === 'parent' && setAuthModal({ ...authModal, show: false })
       }
-      className="cursor-pointer absolute top-0 left-0 flex items-center justify-center w-full h-full backdrop-blur-md bg-black/60 bg"
+      className="p-2 cursor-pointer absolute top-0 left-0 flex items-center justify-center w-full h-full backdrop-blur-md bg-black/60"
     >
       <div className="p-10 rounded-md bg-darkBg w-[480px]">
         <img

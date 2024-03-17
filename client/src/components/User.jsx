@@ -2,6 +2,7 @@ import { useAuthStore } from '../store/auth';
 import { useChatStore } from '../store/chat';
 
 export default function User() {
+  const room = useChatStore((state) => state.room);
   const user = useAuthStore((state) => state.user);
   const setAuthModal = useAuthStore((state) => state.setAuthModal);
   const setShowAddFriend = useAuthStore((state) => state.setShowAddFriend);
@@ -9,7 +10,11 @@ export default function User() {
   const onlineUsers = useChatStore((state) => state.onlineUsers);
 
   return (
-    <div className="px-5 py-5 m-2 rounded-md bg-darkBg">
+    <div
+      className={`px-5 py-5 md:block m-2 rounded-md bg-darkBg ${
+        room ? 'hidden' : 'block'
+      }`}
+    >
       {user ? (
         <div className="flex gap-4">
           <div className="relative w-12 h-12">
