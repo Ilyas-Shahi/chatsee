@@ -5,12 +5,13 @@ import { useChatStore } from '../store/chat';
 import { useAuthStore } from '../store/auth';
 
 export default function ChatHead({ data }) {
+  const [notification, setNotification] = useState(false);
   const user = useAuthStore((state) => state.user);
   const onlineUsers = useChatStore((state) => state.onlineUsers);
   const room = useChatStore((state) => state.room);
   const setRoom = useChatStore((state) => state.setRoom);
   const setMessagesFromDB = useChatStore((state) => state.setMessagesFromDB);
-  const [notification, setNotification] = useState(false);
+  const setLoading = useChatStore((state) => state.setLoading);
 
   const roomId = [user._id, data._id].sort().join('-');
 
@@ -25,12 +26,21 @@ export default function ChatHead({ data }) {
       socket.emit('start-chat', roomData, (response) => {
         // getting the prev chats for this room in response from server
         setMessagesFromDB(response?.prevChats ? response.prevChats : []);
+
+        // set the loading false after receiving messages based on messages length
+        if (response) {
+          setTimeout(() => {
+            setLoading(false);
+          }, response.prevChats?.length * 5 || 500);
+        }
       });
     }
   };
 
   // If not already in the room, check for any activity on user/chat and show notification
   useEffect(() => {
+    setLoading(true);
+
     socket.on(`${roomId}-activity`, () => {
       if (room?.roomId !== roomId) {
         setNotification(true);

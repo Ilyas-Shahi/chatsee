@@ -15,6 +15,7 @@ export default function ChatBody() {
   const messages = useChatStore((state) => state.messages);
   const setMessages = useChatStore((state) => state.setMessages);
   const setErrorModal = useChatStore((state) => state.setErrorModal);
+  const loading = useChatStore((state) => state.loading);
 
   const messagesEndRef = useRef(null);
 
@@ -121,12 +122,12 @@ export default function ChatBody() {
   }, []);
 
   return (
-    <div className="flex flex-col justify-between w-auto h-full gap-2 overflow-hidden">
+    <div className="relative flex flex-col justify-between w-auto h-full gap-2 overflow-hidden">
       <RoomInfo />
 
       <div
         style={{ backgroundImage: 'url(/chat-bg.svg)' }}
-        className="p-4 w-full h-[88vh] flex-col flex gap-2 md:gap-3 scrollbar-hidden overflow-y-scroll border rounded-md border-darkBg bg-cover bg-center"
+        className="p-4 w-full h-[88vh] flex-col flex gap-1.5 md:gap-2 scrollbar-hidden overflow-y-scroll border rounded-md border-darkBg bg-cover bg-center"
       >
         {/* loop over all messages */}
         {messages.map((mes, i) => {
@@ -209,6 +210,16 @@ export default function ChatBody() {
           </button>
         </form>
       </div>
+
+      {loading && (
+        <div className="absolute w-full h-full bg-darkerBG border rounded-md border-darkBg flex justify-center">
+          <img
+            src="/loading-icon.svg"
+            alt="loading icon"
+            className="w-10 animate-spin"
+          />
+        </div>
+      )}
     </div>
   );
 }

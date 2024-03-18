@@ -4,6 +4,9 @@ export const useChatStore = create((set) => ({
   room: null,
   setRoom: (room) => set({ room }),
 
+  loading: true,
+  setLoading: (loading) => set({ loading }),
+
   messages: [],
   setMessages: (message) =>
     set((state) => ({ messages: [...state.messages, message] })),

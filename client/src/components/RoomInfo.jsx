@@ -13,7 +13,7 @@ export default function RoomInfo() {
   );
 
   return (
-    <div className="md:hidden flex gap-4 p-1">
+    <div className="md:hidden flex gap-4 p-1 z-10">
       <div className="relative w-12 h-12">
         <div
           className={`w-4 h-4 border-4 border-darkerBG rounded-full absolute bottom-0 right-0 ${

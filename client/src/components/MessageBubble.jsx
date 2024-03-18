@@ -23,7 +23,7 @@ export default function MessageBubble({ data, status, scrollToBottom }) {
           <img
             src={data.attachment}
             alt="attachment"
-            className="mx-auto my-2 rounded-md cursor-pointer w-60 max-h-96"
+            className="mx-auto my-2 rounded-md cursor-pointer w-60 h-max min-h-32 max-h-80 object-cover"
             onLoad={() => scrollToBottom()}
             onClick={() => window.open(data.attachment, '_blank')}
           />
