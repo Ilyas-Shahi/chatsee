@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+
 import { socket } from '../socket';
 import { storage } from '../../firebase.config';
 import { useChatStore } from '../store/chat';
@@ -9,6 +10,7 @@ import RoomInfo from './RoomInfo';
 
 export default function ChatBody() {
   const [file, setFile] = useState();
+  const [uploadingFile, setUploadingFile] = useState(false);
   const [activityStatus, setActivityStatus] = useState();
   const user = useAuthStore((state) => state.user);
   const room = useChatStore((state) => state.room);
@@ -20,6 +22,15 @@ export default function ChatBody() {
   const messagesEndRef = useRef(null);
 
   let date = new Date(Date.now()).toDateString();
+
+  const handleFileChange = (file) => {
+    console.log(file);
+    if (file.size <= 5000000 && file.type.includes('image')) {
+      setFile(file);
+    } else {
+      alert('Images up to 5mb are only allowed.');
+    }
+  };
 
   const sendMessage = (message, attachment) => {
     const newMessage = {
@@ -45,8 +56,9 @@ export default function ChatBody() {
     const messageText = e.target.message.value.trim();
 
     // If there is a file attachment, upload to firebase storage and send the url in message
-    if (file) {
+    if (file && !uploadingFile) {
       try {
+        setUploadingFile(true);
         const storageRef = ref(storage, `${room.roomId}/${file.name}`); // firebase storage reference
         // Upload file and get back the URL
         const uploadFile = await uploadBytes(storageRef, file);
@@ -67,6 +79,7 @@ export default function ChatBody() {
 
     e.target.message.value = '';
     setFile(null);
+    setUploadingFile(false);
   };
 
   // Scroll to the bottom of the messages container
@@ -178,7 +191,7 @@ export default function ChatBody() {
             htmlFor="file"
             className={`transition-all cursor-pointer hover:opacity-100 ${
               file ? 'opacity-100 cursor-auto' : 'opacity-60'
-            }`}
+            } ${uploadingFile && 'cursor-not-allowed'}`}
           >
             <input
               type="file"
@@ -186,7 +199,7 @@ export default function ChatBody() {
               id="file"
               accept="image/*"
               className="hidden"
-              onChange={(e) => setFile(e.target.files[0])}
+              onChange={(e) => handleFileChange(e.target.files[0])}
             />
             <img
               src="/attachment-icon.svg"
@@ -200,19 +213,26 @@ export default function ChatBody() {
             name="message"
             id="message"
             placeholder={
-              file ? `Attachment selected: ${file.name}` : 'Type a message'
+              file
+                ? uploadingFile
+                  ? 'Uploading...'
+                  : `Attachment selected: ${file.name}`
+                : 'Type a message'
             }
             className="w-full h-12 p-4 break-words rounded-lg appearance-none bg-darkBg focus:outline-none"
           />
 
-          <button type="submit" className="pr-2">
+          <button
+            type="submit"
+            className={`pr-2 ${uploadingFile && 'cursor-not-allowed'}`}
+          >
             <img src="/send-icon.svg" alt="attachment-icon" className="w-8" />
           </button>
         </form>
       </div>
 
       {loading && (
-        <div className="absolute w-full h-full bg-darkerBG border rounded-md border-darkBg flex justify-center">
+        <div className="absolute w-full h-full bg-darkerBG border rounded-md border-darkBg flex justify-center z-50">
           <img
             src="/loading-icon.svg"
             alt="loading icon"

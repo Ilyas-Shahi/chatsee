@@ -30,9 +30,6 @@ app.use('/auth', authRouter);
 
 // WebSocket initialization
 io.on('connection', (socket) => {
-  console.log('======================');
-  console.log('socket connected', socket.id);
-
   const verifiedUser = verifySocketToken(socket);
 
   if (verifiedUser?.id === socket.handshake.auth.userId) {
@@ -63,13 +60,12 @@ io.on('connection', (socket) => {
 
     // Listen for new messages, store in db and forward to receiver
     socket.on('send', async (data, callback) => {
-      console.log('message send', data, currentRoom);
       if (!currentRoom) {
-        console.error('No room selected');
         socket.emit('error', {
           type: 'room-error',
           message: 'No room selected',
         });
+        console.error('No room selected');
         return;
       }
 
@@ -88,14 +84,14 @@ io.on('connection', (socket) => {
         socket.to(currentRoom).emit('receive', data);
         // Emit an event for the room activity to show/update notifications
         io.emit(`${currentRoom}-activity`);
-        // send callback to acknowledge message got to server
+        // send callback to acknowledge message sent/got to server
         callback({ sent: true });
       } catch (err) {
-        console.error(err);
         socket.emit('error', {
           type: 'send-error',
           message: 'Error sending message.',
         });
+        console.error(err);
       }
     });
 
@@ -127,17 +123,17 @@ io.on('connection', (socket) => {
       friendSocket?.emit('update-friends');
     });
   } else {
-    console.error('Not Authorized, Login with valid credentials');
     socket.emit('error', {
       type: 'auth-error',
       message: 'Not Authorized, Login with valid credentials',
     });
+    console.error('Not Authorized, Login with valid credentials');
   }
 
-  // Emit all online users on a socket connection and disconnect
-  io.emit('get-online-users', getOnlineUsers());
+  // Emit all online users on a socket connection/disconnection
+  io.emit('online-users-updated', getOnlineUsers());
   socket.on('disconnect', () => {
-    io.emit('get-online-users', getOnlineUsers());
+    io.emit('online-users-updated', getOnlineUsers());
   });
 });
 
@@ -147,8 +143,6 @@ const getOnlineUsers = () => {
   io.sockets.sockets.forEach((socket) =>
     onlineUsers.push(socket.handshake.auth.userId)
   );
-
-  console.log(onlineUsers);
 
   return onlineUsers;
 };

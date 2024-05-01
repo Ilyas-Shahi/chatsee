@@ -64,6 +64,11 @@ export default function AuthModal() {
       if (res.status === 201) {
         setUser(data);
         setAuthModal({ ...authModal, show: false });
+      } else if (data.keyPattern) {
+        setErrorModal({
+          message: `Check or change: ${Object.keys(data.keyPattern)}`,
+          show: true,
+        });
       } else {
         setErrorModal({
           message:
@@ -94,7 +99,7 @@ export default function AuthModal() {
         />
 
         <form onSubmit={handleSubmit} className="space-y-3">
-          {authModal.for === 'signup' && (
+          {authModal.for === 'sign-up' && (
             <>
               {' '}
               <div className="flex gap-2">
@@ -166,29 +171,22 @@ export default function AuthModal() {
               {authModal.for}
             </button>
 
-            {authModal.for === 'login' && (
-              <p className="text-sm text-gray-300">
-                Not have an account yet?{' '}
-                <span
-                  className="underline cursor-pointer text-accentDark"
-                  onClick={() => setAuthModal({ ...authModal, for: 'signup' })}
-                >
-                  Sign-up here
-                </span>
-              </p>
-            )}
-
-            {authModal.for === 'signup' && (
-              <p className="text-sm text-gray-300">
-                Already have an account?{' '}
-                <span
-                  className="underline cursor-pointer text-accentDark"
-                  onClick={() => setAuthModal({ ...authModal, for: 'login' })}
-                >
-                  Login here
-                </span>
-              </p>
-            )}
+            <p className="text-sm text-gray-300 mt-1">
+              {authModal.for === 'login'
+                ? 'Do not have an account yet? '
+                : 'Already have an account? '}
+              <span
+                className="underline cursor-pointer text-accentDark"
+                onClick={() =>
+                  setAuthModal({
+                    ...authModal,
+                    for: authModal.for === 'login' ? 'sign-up' : 'login',
+                  })
+                }
+              >
+                {authModal.for === 'login' ? 'Sign-up' : 'Login'} here
+              </span>
+            </p>
           </div>
         </form>
       </div>

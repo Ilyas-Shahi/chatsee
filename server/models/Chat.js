@@ -1,14 +1,8 @@
 import mongoose, { Schema } from 'mongoose';
 
 const MessageSchema = new Schema({
-  sender: {
-    type: String,
-    required: true,
-  },
-  receiver: {
-    type: String,
-    required: true,
-  },
+  sender: { type: String, required: true },
+  receiver: { type: String, required: true },
   message: { type: String || Number, required: true },
   attachment: { type: String, default: null },
   sentAt: { type: Date, required: true },

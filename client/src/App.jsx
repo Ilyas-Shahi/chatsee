@@ -1,12 +1,13 @@
-import ChatBody from './components/ChatBody';
 import { useEffect } from 'react';
+
 import { socket } from './socket';
-import User from './components/User';
 import { useAuthStore } from './store/auth';
+import { useChatStore } from './store/chat';
+import ChatBody from './components/ChatBody';
+import User from './components/User';
 import AuthModal from './components/AuthModal';
 import Chats from './components/Chats';
 import AddFriend from './components/AddFriend';
-import { useChatStore } from './store/chat';
 import ErrorModal from './components/ErrorModal';
 
 function App() {
@@ -22,14 +23,14 @@ function App() {
   const setErrorModal = useChatStore((state) => state.setErrorModal);
 
   useEffect(() => {
-    socket.on('get-online-users', (onlineUsers) => {
+    socket.on('online-users-updated', (onlineUsers) => {
       setOnlineUsers(onlineUsers);
     });
 
     socket.on('error', (error) => setErrorModal({ ...error, show: true }));
 
     return () => {
-      socket.off('get-online-users');
+      socket.off('online-users-updated');
       socket.off('error');
     };
   }, []);
@@ -70,7 +71,7 @@ function App() {
                     </button>
                     <button
                       onClick={() =>
-                        setAuthModal({ for: 'signup', show: true })
+                        setAuthModal({ for: 'sign-up', show: true })
                       }
                       className="px-10 py-2 font-semibold transition-all rounded-md bg-accentDark text-darkerBG hover:bg-accent"
                     >

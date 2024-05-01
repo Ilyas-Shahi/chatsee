@@ -28,7 +28,6 @@ export default function Chats() {
 
   // update friends if another add this user as a friend
   socket.on('update-friends', () => {
-    console.log('update-friends fetch friends', user);
     fetchFriendsData();
   });
 
@@ -45,7 +44,7 @@ export default function Chats() {
         room ? 'hidden' : 'block'
       }`}
     >
-      <h2 className="pb-4 mb-8 text-3xl font-semibold border-b border-darkMid">
+      <h2 className="pb-4 mb-8 text-2xl tracking-wide border-b border-darkMid">
         Chats
       </h2>
 

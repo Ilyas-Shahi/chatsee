@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+
 import { socket } from '../socket';
 import { useChatStore } from '../store/chat';
 import { useAuthStore } from '../store/auth';
@@ -31,7 +32,7 @@ export default function ChatHead({ data }) {
         if (response) {
           setTimeout(() => {
             setLoading(false);
-          }, response.prevChats?.length * 5 || 500);
+          }, response.prevChats?.length * 5 || 200);
         }
       });
     }

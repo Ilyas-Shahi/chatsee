@@ -63,7 +63,7 @@ export default function User() {
             Login
           </button>
           <button
-            onClick={() => setAuthModal({ for: 'signup', show: true })}
+            onClick={() => setAuthModal({ for: 'sign-up', show: true })}
             className="w-full px-6 py-2 font-semibold transition-all rounded-md bg-darkerBG hover:bg-accent hover:text-darkerBG"
           >
             Sign up

@@ -42,7 +42,7 @@ export const addFriend = async (req, res) => {
     if (req.user.id !== req.params.id) {
       return res
         .status(403)
-        .json({ message: 'Not Allowed to change/add others friends.' });
+        .json({ message: 'Not Allowed to change/add other users friends.' });
     }
 
     const id = req.params.id;
