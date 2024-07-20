@@ -24,7 +24,6 @@ export default function ChatBody() {
   let date = new Date(Date.now()).toDateString();
 
   const handleFileChange = (file) => {
-    console.log(file);
     if (file.size <= 5000000 && file.type.includes('image')) {
       setFile(file);
     } else {

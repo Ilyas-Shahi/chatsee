@@ -111,6 +111,8 @@ export default function AuthModal() {
                     type="text"
                     name="firstName"
                     id="firstName"
+                    min={1}
+                    required
                     className="w-full h-10 px-4 border rounded-md outline-none bg-darkerBG border-darkMid"
                   />
                 </div>
@@ -122,6 +124,8 @@ export default function AuthModal() {
                     type="text"
                     name="lastName"
                     id="lastName"
+                    min={1}
+                    required
                     className="w-full h-10 px-4 border rounded-md outline-none bg-darkerBG border-darkMid"
                   />
                 </div>
@@ -134,6 +138,7 @@ export default function AuthModal() {
                   type="text"
                   name="userName"
                   id="userName"
+                  required
                   className="w-full h-10 px-4 border rounded-md outline-none bg-darkerBG border-darkMid"
                 />
               </div>
@@ -148,6 +153,7 @@ export default function AuthModal() {
               type="text"
               name="email"
               id="email"
+              required
               className="w-full h-10 px-4 border rounded-md outline-none bg-darkerBG border-darkMid"
             />
           </div>
@@ -156,9 +162,10 @@ export default function AuthModal() {
               Password
             </label>
             <input
-              type="text"
+              type="password"
               name="password"
               id="password"
+              required
               className="w-full h-10 px-4 border rounded-md outline-none bg-darkerBG border-darkMid"
             />
           </div>
