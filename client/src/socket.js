@@ -1,7 +1,8 @@
 import { io } from 'socket.io-client';
 
-// export const socket = io('http://localhost:3000');
-export const socket = io('http://localhost:3000', {
+const uri = import.meta.env.SERVER_ORIGIN || 'http://localhost:3000';
+
+export const socket = io(uri, {
   autoConnect: false,
   withCredentials: true,
 });

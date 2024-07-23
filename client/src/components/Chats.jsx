@@ -4,6 +4,8 @@ import ChatHead from './ChatHead';
 import { socket } from '../socket';
 import { useChatStore } from '../store/chat';
 
+const apiUrl = import.meta.env.SERVER_ORIGIN || '/api';
+
 export default function Chats() {
   const user = useAuthStore((state) => state.user);
   const room = useChatStore((state) => state.room);
@@ -15,7 +17,7 @@ export default function Chats() {
   const fetchFriendsData = async () => {
     if (user) {
       try {
-        const res = await fetch(`/api/user/${user._id}/friends`);
+        const res = await fetch(`${apiUrl}/user/${user._id}/friends`);
         const data = await res.json();
 
         if (res.status === 200) setFriendsData(data);

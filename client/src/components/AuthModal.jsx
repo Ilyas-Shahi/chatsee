@@ -2,6 +2,8 @@ import { socket } from '../socket';
 import { useAuthStore } from '../store/auth';
 import { useChatStore } from '../store/chat';
 
+const apiUrl = import.meta.env.SERVER_ORIGIN || '/api';
+
 export default function AuthModal() {
   const setUser = useAuthStore((state) => state.setUser);
   const authModal = useAuthStore((state) => state.authModal);
@@ -22,7 +24,7 @@ export default function AuthModal() {
 
   const login = async (email, password) => {
     try {
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch(`${apiUrl}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email.value, password: password.value }),
@@ -47,7 +49,7 @@ export default function AuthModal() {
 
   const signup = async (firstName, lastName, userName, email, password) => {
     try {
-      const res = await fetch('/api/auth/signup', {
+      const res = await fetch(`${apiUrl}/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

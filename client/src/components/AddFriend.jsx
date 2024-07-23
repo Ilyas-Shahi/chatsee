@@ -2,6 +2,8 @@ import { socket } from '../socket';
 import { useAuthStore } from '../store/auth';
 import { useChatStore } from '../store/chat';
 
+const apiUrl = import.meta.env.SERVER_ORIGIN || '/api';
+
 export default function AddFriend() {
   const user = useAuthStore((state) => state.user);
   const friendsData = useAuthStore((state) => state.friendsData);
@@ -15,7 +17,7 @@ export default function AddFriend() {
     const friendUsername = e.target.friendUsername.value;
 
     try {
-      const res = await fetch(`api/user/${user._id}/friends/add`, {
+      const res = await fetch(`${apiUrl}/user/${user._id}/friends/add`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ friendUsername }),
