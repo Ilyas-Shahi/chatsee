@@ -4,7 +4,9 @@ import ChatHead from './ChatHead';
 import { socket } from '../socket';
 import { useChatStore } from '../store/chat';
 
-const apiUrl = import.meta.env.SERVER_ORIGIN || '/api';
+const apiUrl = import.meta.env.PROD
+  ? import.meta.env.VITE_SERVER_ORIGIN
+  : '/api';
 
 export default function Chats() {
   const user = useAuthStore((state) => state.user);

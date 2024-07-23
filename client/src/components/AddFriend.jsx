@@ -2,7 +2,9 @@ import { socket } from '../socket';
 import { useAuthStore } from '../store/auth';
 import { useChatStore } from '../store/chat';
 
-const apiUrl = import.meta.env.SERVER_ORIGIN || '/api';
+const apiUrl = import.meta.env.PROD
+  ? import.meta.env.VITE_SERVER_ORIGIN
+  : '/api';
 
 export default function AddFriend() {
   const user = useAuthStore((state) => state.user);
