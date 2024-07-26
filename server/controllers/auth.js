@@ -20,10 +20,7 @@ export const login = async (req, res) => {
 
     delete user.password;
 
-    res
-      .cookie('access_token', token, { httpOnly: true })
-      .status(200)
-      .json(user);
+    res.cookie('access_token', token).status(200).json(user);
   } catch (err) {
     res.status(500).json(err);
   }
@@ -42,10 +39,7 @@ export const signup = async (req, res) => {
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
 
-    res
-      .cookie('access_token', token, { httpOnly: true })
-      .status(201)
-      .json(user);
+    res.cookie('access_token', token).status(201).json(user);
   } catch (err) {
     res.status(500).json(err);
   }
