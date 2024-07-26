@@ -14,6 +14,7 @@ const app = express();
 dotenv.config();
 app.use(express.json());
 app.use(cookieParser());
+
 // Creating server instance for socket.io server constructor and allow cors for client origin
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
