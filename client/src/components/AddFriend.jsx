@@ -20,6 +20,7 @@ export default function AddFriend() {
 
     try {
       const res = await fetch(`${apiUrl}/user/${user._id}/friends/add`, {
+        credentials: 'include',
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ friendUsername }),

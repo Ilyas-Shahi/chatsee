@@ -19,7 +19,9 @@ export default function Chats() {
   const fetchFriendsData = async () => {
     if (user) {
       try {
-        const res = await fetch(`${apiUrl}/user/${user._id}/friends`);
+        const res = await fetch(`${apiUrl}/user/${user._id}/friends`, {
+          credentials: 'include',
+        });
         const data = await res.json();
 
         if (res.status === 200) setFriendsData(data);
