@@ -17,7 +17,7 @@ jobs:
 
       - name: Update and deploy
         run: |
-          cd chatsee/server
+          cd ~/chatsee/server
           git fetch origin
           git rebase origin/master
           yarn

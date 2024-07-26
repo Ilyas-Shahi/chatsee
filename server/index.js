@@ -25,7 +25,7 @@ const io = new Server(httpServer, {
   cookie: true,
 });
 
-// Express cors for normal API
+// Express cors for normal APIs
 app.use(
   cors({
     origin: process.env.CLIENT_ORIGIN,
