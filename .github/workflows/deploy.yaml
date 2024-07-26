@@ -15,16 +15,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Deploy to EC2
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd chatsee/server
-            git fetch origin
-            git rebase origin/master
-            yarn
-            pm2 restart chatsee-server || pm2 start app.js --name "chatsee-server" --watch
-            pm2 save
+      - name: Update and deploy
+        run: |
+          cd chatsee/server
+          git fetch origin
+          git rebase origin/master
+          yarn
+          pm2 restart chatsee-server || pm2 start app.js --name "chatsee-server" --watch
+          pm2 save
