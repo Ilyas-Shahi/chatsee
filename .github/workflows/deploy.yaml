@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -23,8 +23,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd chatsee/server
-            git fetch origin master
-            git checkout master -- .
+            git fetch origin
+            git rebase origin/master
             yarn
             pm2 restart chatsee-server || pm2 start app.js --name "chatsee-server" --watch
             pm2 save
