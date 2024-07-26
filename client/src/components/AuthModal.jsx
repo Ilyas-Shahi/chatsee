@@ -70,6 +70,9 @@ export default function AuthModal() {
       if (res.status === 201) {
         setUser(data);
         setAuthModal({ ...authModal, show: false });
+
+        socket.auth = { userId: data._id }; // pass user id to server on socket handshake
+        socket.connect();
       } else if (data.keyPattern) {
         setErrorModal({
           message: `Check or change: ${Object.keys(data.keyPattern)}`,
