@@ -19,7 +19,7 @@ jobs:
         run: |
           cd ~/chatsee/server
           git fetch origin
-          git rebase origin/master
+          git reset --hard origin/master
           yarn
           pm2 restart chatsee-server || pm2 start app.js --name "chatsee-server" --watch
           pm2 save
