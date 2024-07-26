@@ -20,22 +20,7 @@ export const login = async (req, res) => {
 
     delete user.password;
 
-    res.header('Access-Control-Allow-Credentials', true);
-    res.header('Access-Control-Allow-Origin', process.env.CLIENT_ORIGIN);
-
-    res
-      .cookie('access_token', token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'none',
-        path: '/',
-        maxAge: 24 * 60 * 60 * 1000,
-        domain: '.chatsee.site',
-      })
-      .status(200)
-      .json(user);
-
-    // res.cookie('access_token', token).status(200).json(user);
+    res.cookie('access_token', token).status(200).json(user);
   } catch (err) {
     res.status(500).json(err);
   }
