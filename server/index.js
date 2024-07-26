@@ -25,6 +25,7 @@ const io = new Server(httpServer, {
   cookie: true,
 });
 
+// Express cors
 app.use(
   cors({
     origin: process.env.CLIENT_ORIGIN,
