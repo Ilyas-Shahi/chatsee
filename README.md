@@ -1,7 +1,57 @@
 # Chatsee
 
-### Real-time Chat app with File Sharing.
+#### [Live Site](chatsee.site)
 
-Built on MERN stack. Using Socket.IO for real-time chatting and WebSockets. Using MongoDB for database, and Firebase Storage for file storage, and JWT for auth. On the front end, we're using Vite, React, and Tailwind CSS to make things look good and run smoothly and using Zustand for state management. We organize everything in one place with Yarn workspaces.
+Chatsee is a real-time chat application with file sharing capabilities, built on the MERN stack.
 
-Still under development...
+### Getting Started
+
+To use Chatsee:
+
+- Visit [chatsee.site](chatsee.site)
+- Sign up for a simple account
+- Add a friend to start chatting
+
+### Features
+
+- Real-time messaging using Socket.IO and WebSockets
+- User authentication with JWT
+- File sharing and storage using Firebase Storage
+- MongoDB database for data persistence
+- Responsive design
+- Message read/unread status
+- Asynchronous friend addition updates
+- Online status indicators
+- Room-based authentication
+- Chat date display
+- User presence indicators
+- Notification indicators
+
+### Technology Stack
+
+#### Backend
+
+- Node.js
+- Express.js
+- MongoDB
+- Socket.IO
+- JWT for authentication
+
+#### Frontend
+
+- React
+- Vite
+- Tailwind CSS
+- Zustand for state management
+
+#### Storage
+
+- Firebase Storage for file storage
+
+#### Deployment
+
+- AWS EC2 with Nginx
+
+#### Project Structure
+
+This project uses Yarn workspaces to organize the monorepo.
