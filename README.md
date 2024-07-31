@@ -1,6 +1,6 @@
 # Chatsee
 
-#### [Live Site](chatsee.site)
+#### [Live Site](https://chatsee.site)
 
 Chatsee is a real-time chat application with file sharing capabilities, built on the MERN stack.
 
@@ -8,7 +8,7 @@ Chatsee is a real-time chat application with file sharing capabilities, built on
 
 To use Chatsee:
 
-- Visit [chatsee.site](chatsee.site)
+- Visit [chatsee.site](https://chatsee.site)
 - Sign up for a simple account
 - Add a friend to start chatting
 
